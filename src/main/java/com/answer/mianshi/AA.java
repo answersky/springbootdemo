@@ -17,4 +17,8 @@ public class AA {
     public static void operator(StringBuffer x, StringBuffer y) {
         x.append(y); y = x;
     }
+
+    public static int met (int i){
+        return 0;
+    }
 }

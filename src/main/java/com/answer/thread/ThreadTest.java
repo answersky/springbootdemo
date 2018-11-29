@@ -1,6 +1,6 @@
-package com.answer.demo;
+package com.answer.thread;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * created by liufeng
