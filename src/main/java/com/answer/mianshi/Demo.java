@@ -1,13 +1,6 @@
 package com.answer.mianshi;
 
 
-
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.ArrayBlockingQueue;
-
 /**
  * created by liufeng
  * 2018/9/19
@@ -19,6 +12,8 @@ public class Demo {
         test(stringBuilderA,stringBuilderB);
         System.out.println(stringBuilderA);
         System.out.println(stringBuilderB);
+        Integer[] integers=new Integer[2];
+
     }
 
     private static void test(StringBuilder x,StringBuilder b){
