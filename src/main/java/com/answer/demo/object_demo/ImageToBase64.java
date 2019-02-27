@@ -1,5 +1,7 @@
 package com.answer.demo.object_demo;
 
+
+import org.apache.commons.codec.binary.Base64;
 import sun.misc.BASE64Encoder;
 
 /**
@@ -9,21 +11,19 @@ import sun.misc.BASE64Encoder;
 public class ImageToBase64 {
     public static void main(String[] args) {
         String imgFile="D:\\img\\22.jpg";
-        /*InputStream inputStream = null;
-        byte[] data = null;
-        try {
-            inputStream = new FileInputStream(imgFile);
-            data = new byte[inputStream.available()];
-            inputStream.read(data);
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         String url="img/201501/28/20150128132252867.jpg?x-oss-process=image/resize,P_80";
         byte[] data=url.getBytes();
+        //带有换行\r\n，规定一行76个字符
         String base64Str=safeUrlBase64Encode(data);
         System.out.println(base64Str);
 
+        //不带换行符
+        Base64 base64 = new Base64();
+        String noSpaceBase64Str=base64.encodeAsString(data);
+        noSpaceBase64Str = noSpaceBase64Str.replace('+', '-');
+        noSpaceBase64Str = noSpaceBase64Str.replace('/', '_');
+        noSpaceBase64Str = noSpaceBase64Str.replaceAll("=", "");
+        System.out.println(noSpaceBase64Str);
         test("//img/201512/02/2015120209341613.jpg");
     }
 
