@@ -1,4 +1,4 @@
-package com.answer.mianshi;
+package com.answer.codewars;
 
 import static org.junit.Assert.assertEquals;
 
