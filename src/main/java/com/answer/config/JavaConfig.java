@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * 2018/9/12
  */
 @Configuration
-@ComponentScan("com.answer.demo.spring.scope")
+@ComponentScan({"com.answer.demo.spring.scope"})
 public class JavaConfig {
 
     @Bean(initMethod = "init",destroyMethod = "destroy")
@@ -25,4 +25,5 @@ public class JavaConfig {
         useFunctionService.setFunctinonService(functinonService());
         return useFunctionService;
     }
+
 }
