@@ -13,11 +13,16 @@ public class ListTest {
         ll.add("a");
         ll.add("b");
         ll.add("c");
-        List<String> l2 = new ArrayList<>(ll.subList(1, 2));
+        List<String> l2 = new ArrayList<>();
         l2.add("new");
         System.out.println(ll);
         System.out.println(l2);
-        ll.subList(1, 2).clear();
+
+        //交集
+//        ll.retainAll(l2);
+//        System.out.println("交集："+ll);
+
+        ll.removeAll(l2);
         System.out.println(ll);
     }
 }
