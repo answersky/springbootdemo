@@ -1,5 +1,8 @@
 package com.answer.demo.Collection;
 
+
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +25,12 @@ public class ListTest {
 //        ll.retainAll(l2);
 //        System.out.println("交集："+ll);
 
-        ll.removeAll(l2);
-        System.out.println(ll);
+//        ll.removeAll(l2);
+//        System.out.println(ll);
+
+        List<List<String>> list= Lists.partition(ll,2);
+        for(List<String> subList:list){
+            System.out.println(subList);
+        }
     }
 }
