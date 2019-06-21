@@ -6,6 +6,6 @@ package com.answer.demo.Collection;
  */
 public class BB {
     public void test(Integer a){
-        System.out.println("............");
+        System.out.println("............"+a);
     }
 }
