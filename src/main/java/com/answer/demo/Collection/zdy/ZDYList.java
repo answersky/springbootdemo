@@ -1,5 +1,6 @@
 package com.answer.demo.Collection.zdy;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -42,12 +43,12 @@ public class ZDYList<E> implements ZDYListInterface<E>{
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.size==0;
     }
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        return indexOf(o)>0;
     }
 
     @Override
@@ -91,15 +92,25 @@ public class ZDYList<E> implements ZDYListInterface<E>{
     public boolean add(E element){
         //判断添加元素时是否数组越界
         if(size==initLength){
-            throw new ZDYListException("添加元素已达最大容量");
+            extendLength(initLength);
+//            throw new ZDYListException("添加元素已达最大容量");
         }
         this.elementArr[size]=element;
         size++;
         return true;
     }
 
-    private void extendLength(int size){
-
+    /**
+     * 扩充 当前容量*1.5+1
+     * @param oldLength
+     */
+    private void extendLength(int oldLength){
+        long newLength= (long) (oldLength*1.5+1);
+        if(newLength>Integer.MAX_VALUE){
+            newLength=Integer.MAX_VALUE;
+        }
+        initLength= Integer.parseInt(String.valueOf(newLength));
+        this.elementArr= Arrays.copyOf(elementArr,initLength);
     }
 
     @Override
