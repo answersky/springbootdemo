@@ -1,5 +1,8 @@
 package com.answer.demo.Collection.zdy;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * created by liufeng
  * 2019/6/21
@@ -28,5 +31,9 @@ public class ZDYListTest {
         }
         System.out.println("linked size:"+zdyLinkedList.size());
         System.out.println("linked i=1:"+zdyLinkedList.get(1));
+        System.out.println("=================================");
+        Set<String> set=new LinkedHashSet<>();
+        set.add("3333");
+        System.out.println("set value:"+set.size());
     }
 }
