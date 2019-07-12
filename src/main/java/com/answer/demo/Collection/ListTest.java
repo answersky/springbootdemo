@@ -18,6 +18,11 @@ public class ListTest {
         ll.add("c");
         List<String> l2 = new ArrayList<>();
         l2.add("new");
+        for(String s:ll){
+            if(s.equals("a")){
+                s="ab";
+            }
+        }
         System.out.println(ll);
         System.out.println(l2);
 
