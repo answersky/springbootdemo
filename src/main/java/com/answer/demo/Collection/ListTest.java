@@ -15,14 +15,17 @@ public class ListTest {
         List<String> ll = new ArrayList<>();
         ll.add("a");
         ll.add("b");
-        ll.add("c");
+        ll.add("d");
         List<String> l2 = new ArrayList<>();
-        l2.add("new");
-        for(String s:ll){
+        l2.add("a");
+        l2.add("b");
+        l2.add("c");
+        l2.add("e");
+       /* for(String s:ll){
             if(s.equals("a")){
                 s="ab";
             }
-        }
+        }*/
         System.out.println(ll);
         System.out.println(l2);
 
@@ -33,9 +36,12 @@ public class ListTest {
 //        ll.removeAll(l2);
 //        System.out.println(ll);
 
-        List<List<String>> list= Lists.partition(ll,2);
+        l2.removeAll(ll);
+        System.out.println(l2);
+
+        /*List<List<String>> list= Lists.partition(ll,2);
         for(List<String> subList:list){
             System.out.println(subList);
-        }
+        }*/
     }
 }
