@@ -1,5 +1,9 @@
 package com.answer.utlis;
 
+import com.alibaba.druid.support.json.JSONUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.sf.json.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -31,7 +35,10 @@ public class RedisLock {
     public boolean getLock(long timeout,long acquireTime,String lockKey){
         Jedis jedis=null;
         try {
+            Gson gson=new Gson();
+            System.out.println("jedisPool:"+jedisPool.toString());
             jedis=jedisPool.getResource();
+            System.out.println("jedis:"+gson.toJson(jedis));
             String threadId = String.valueOf(Thread.currentThread().getId());
             System.out.println(threadId+"  开始获取锁");
             long current=System.currentTimeMillis();
