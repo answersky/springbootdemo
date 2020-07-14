@@ -34,7 +34,7 @@ public class DynamicProperties extends MapPropertySource {
         try {
             jedis=jedisPool.getResource();
             String value=jedis.get("host");
-            this.source.put("mail.host",value);
+            this.source.put("host",value);
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

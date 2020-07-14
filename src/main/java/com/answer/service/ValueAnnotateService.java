@@ -19,7 +19,7 @@ public class ValueAnnotateService {
 
 
     public void systemValue(){
-        System.out.println("---->"+environment.getProperty("mail.host"));
+        System.out.println("---->"+environment.getProperty("host"));
         System.out.println(environment.getProperty("answer.name"));
     }
 
