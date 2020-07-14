@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * created by liufeng
  * 2018/9/12
+ * java代码方式注释bean
  */
 @Configuration
 @ComponentScan({"com.answer.demo.spring.scope"})

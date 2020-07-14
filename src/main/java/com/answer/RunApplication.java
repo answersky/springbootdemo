@@ -1,12 +1,21 @@
 package com.answer;
 
+import com.answer.config.DynamicProperties;
+import com.answer.service.ValueAnnotateService;
 import com.answer.spring_listener.SpringEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import javax.annotation.Resource;
 
 /**
  * created by liufeng
@@ -14,15 +23,36 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @SpringBootApplication
-public class RunApplication {
+@EnableScheduling
+public class RunApplication implements ApplicationRunner {
     private static final Logger log=LoggerFactory.getLogger(RunApplication.class);
+
+    @Autowired
+    private DynamicProperties dynamicProperties;
+    @Resource
+    private ConfigurableEnvironment environment;
 
     public static void main(String[] args) {
 //        SpringApplication.run(RunApplication.class,args);
         SpringApplication application = new SpringApplication(RunApplication.class);
+
         ConfigurableApplicationContext context = application.run(args);
+        //注册自定义监听事件
         SpringEvent springEvent=new SpringEvent(context,"Spring事件");
         context.publishEvent(springEvent);
         log.error("logback日志打印");
+
+    }
+
+    /**
+     * springboot启动时自动执行方法
+     * @param applicationArguments
+     * @throws Exception
+     */
+    @Override
+    public void run(ApplicationArguments applicationArguments) throws Exception {
+        log.error("run method execute!!!");
+        dynamicProperties.initConfig();
+        environment.getPropertySources().addLast(dynamicProperties);
     }
 }

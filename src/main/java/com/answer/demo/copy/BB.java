@@ -1,5 +1,6 @@
 package com.answer.demo.copy;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -11,6 +12,15 @@ public class BB {
     private String name;
     private Date time;
     private Integer age;
+    private BigDecimal price;
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
     public Integer getId() {
         return id;
@@ -51,6 +61,7 @@ public class BB {
                 ", name='" + name + '\'' +
                 ", time=" + time +
                 ", age=" + age +
+                ", price=" + price +
                 '}';
     }
 }

@@ -14,7 +14,6 @@ public class test {
         AA aa=new AA();
         aa.setId(1);
         aa.setName("aa");
-        aa.setTime(new Date());
         BB bb=new BB();
         BeanUtils.copyProperties(bb,aa);
         System.out.println(aa);
