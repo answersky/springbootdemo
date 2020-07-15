@@ -2,11 +2,13 @@ package com.answer.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import javax.annotation.Resource;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,6 +22,8 @@ import java.util.Map;
 public class DynamicProperties extends MapPropertySource {
     @Autowired
     private JedisPool jedisPool;
+    @Resource
+    private ConfigurableEnvironment environment;
 
     public DynamicProperties(String name, Map<String, Object> source) {
         super(name, source);
@@ -35,6 +39,7 @@ public class DynamicProperties extends MapPropertySource {
             jedis=jedisPool.getResource();
             String value=jedis.get("host");
             this.source.put("host",value);
+            environment.getPropertySources().addLast(this);
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

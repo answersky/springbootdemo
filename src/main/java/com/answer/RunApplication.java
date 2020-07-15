@@ -29,8 +29,7 @@ public class RunApplication implements ApplicationRunner {
 
     @Autowired
     private DynamicProperties dynamicProperties;
-    @Resource
-    private ConfigurableEnvironment environment;
+
 
     public static void main(String[] args) {
 //        SpringApplication.run(RunApplication.class,args);
@@ -53,6 +52,5 @@ public class RunApplication implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) throws Exception {
         log.error("run method execute!!!");
         dynamicProperties.initConfig();
-        environment.getPropertySources().addLast(dynamicProperties);
     }
 }

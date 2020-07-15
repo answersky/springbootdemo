@@ -19,14 +19,11 @@ public class RefreshScheduler {
     private static final Logger log=LoggerFactory.getLogger(RefreshScheduler.class);
     @Autowired
     private DynamicProperties dynamicProperties;
-    @Resource
-    private ConfigurableEnvironment environment;
 
     @Scheduled(cron = "*/5 * * * * ?")
     public void scheduling() {
         log.error("定时检查更新配置任务执行.......");
         /* Spring的环境中定时刷新 */
         dynamicProperties.initConfig();
-        environment.getPropertySources().addLast(dynamicProperties);
     }
 }
