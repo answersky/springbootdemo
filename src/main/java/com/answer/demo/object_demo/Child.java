@@ -6,11 +6,12 @@ package com.answer.demo.object_demo;
  */
 public class Child extends Parent{
     private Integer age;
-    public Child(){
-        super();
-    }
+//    public Child(){
+//        super();
+//    }
     public Child(Integer age){
-        this.age=age;
+//        this.age=age;
+        super(age);
     }
 
     @Override

@@ -6,9 +6,9 @@ package com.answer.demo.object_demo;
  */
 public class Parent {
     Integer id;
-    public Parent(){
+    /*public Parent(){
 
-    }
+    }*/
     public Parent(Integer id){
         this.id=id;
     }

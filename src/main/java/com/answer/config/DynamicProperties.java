@@ -18,7 +18,6 @@ import java.util.Map;
  * 实现动态加载配置文件，不用重启项目
  */
 @Component
-@Configuration
 public class DynamicProperties extends MapPropertySource {
     @Autowired
     private JedisPool jedisPool;
