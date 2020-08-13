@@ -12,6 +12,12 @@ import java.util.List;
  */
 public class ListTest {
     public static void main(String[] args) {
+        String[] aa=new String[3];
+        aa[0]="12";
+        for(String a:aa){
+            System.out.println(a);
+        }
+
         List<String> ll = new ArrayList<>();
         ll.add("a");
         ll.add("b");
