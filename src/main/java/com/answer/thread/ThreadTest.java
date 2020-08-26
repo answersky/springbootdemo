@@ -14,7 +14,7 @@ public class ThreadTest extends Thread{
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        MyThread tt=new MyThread();
+        Thread tt=new MyThread();
         tt.start();
         tt.join();
         System.out.println("主线程执行");
