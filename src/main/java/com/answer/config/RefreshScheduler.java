@@ -24,6 +24,6 @@ public class RefreshScheduler {
     public void scheduling() {
         log.error("定时检查更新配置任务执行.......");
         /* Spring的环境中定时刷新 */
-        dynamicProperties.initConfig();
+//        dynamicProperties.initConfig();
     }
 }

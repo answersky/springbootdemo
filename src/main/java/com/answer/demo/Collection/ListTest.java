@@ -45,9 +45,9 @@ public class ListTest {
         l2.removeAll(ll);
         System.out.println(l2);
 
-        /*List<List<String>> list= Lists.partition(ll,2);
+        List<List<String>> list= Lists.partition(ll,5);
         for(List<String> subList:list){
             System.out.println(subList);
-        }*/
+        }
     }
 }
