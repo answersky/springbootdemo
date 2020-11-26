@@ -18,6 +18,7 @@ public class MapTest {
         }
         map.put("12",list);
         System.out.println("=======>"+map.get("12"));
+        System.out.println(map.isEmpty());
 
 
     }

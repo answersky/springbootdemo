@@ -20,13 +20,13 @@ public class ListTest {
 
         List<String> ll = new ArrayList<>();
         ll.add("a");
-        ll.add("b");
-        ll.add("d");
+//        ll.add("b");
+//        ll.add("d");
         List<String> l2 = new ArrayList<>();
         l2.add("a");
-        l2.add("b");
-        l2.add("c");
-        l2.add("e");
+//        l2.add("b");
+//        l2.add("c");
+//        l2.add("e");
        /* for(String s:ll){
             if(s.equals("a")){
                 s="ab";
