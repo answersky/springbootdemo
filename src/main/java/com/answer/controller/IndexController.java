@@ -21,4 +21,5 @@ public class IndexController {
         valueAnnotateService.systemValue();
         return "2";
     }
+
 }

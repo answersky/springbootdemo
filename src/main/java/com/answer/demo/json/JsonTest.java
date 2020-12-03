@@ -26,5 +26,8 @@ public class JsonTest {
         List<Map<String,Object>> list= (List<Map<String, Object>>) JSONObject.parse(json1);
         System.out.println(list);
 
+        String dataJson = "{\"orderType\":\"4\",\"outPayFLowId\":\"23323233423233\",\"payMoney\":1,\"payTypeId\":19,\"payTime\":\"2020-11-26 10:33:12\",\"payFLowId\":\"23232323232332434343434443\",\"flowId\":\"KY_20201125181221092296253\",\"payStatus\":\"1\"}";
+        Map<Object, Object> map = (Map<Object, Object>) JSONObject.parse(dataJson);
+        System.out.println(map);
     }
 }
