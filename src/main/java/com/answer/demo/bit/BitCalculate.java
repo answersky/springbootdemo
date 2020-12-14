@@ -9,5 +9,10 @@ public class BitCalculate {
         int i=1;
         System.out.println("左移1位:"+(i<<1));
         System.out.println("左移2位:"+(i<<1<<1));
+
+        int v=5;
+        System.out.println(v >> 1);
+        System.out.println(v >> 1 << 1);
+        System.out.println(v >> 1 << 1 == v);
     }
 }

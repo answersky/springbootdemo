@@ -2,6 +2,7 @@ package com.answer.demo.time;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,5 +29,9 @@ public class TimeDemo {
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
         String endTime1=dateFormat.format(cal.getTime());
         System.out.println("下个月最后一天:"+endTime1);
+
+        LocalDate today = LocalDate.now();
+        System.out.println(today.getDayOfMonth());
+
     }
 }
