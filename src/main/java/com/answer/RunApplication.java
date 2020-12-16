@@ -78,7 +78,7 @@ public class RunApplication implements ApplicationRunner {
         }
 
         //测试redis bitmap实现签到
-        testRedisBitMapSign();
+//        testRedisBitMapSign();
 
     }
 
