@@ -22,4 +22,13 @@ public class IndexController {
         return "2";
     }
 
+    @RequestMapping("/")
+    public String indexPage(){
+        return "index";
+    }
+
+    @RequestMapping("/indexDB")
+    public String indexDBPage(){
+        return "indexDB";
+    }
 }

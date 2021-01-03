@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * created by liufeng
@@ -11,11 +14,38 @@ import redis.clients.jedis.JedisPool;
  */
 @Component
 public class JedisUtil {
-    @Autowired
-    private JedisPool jedisPool;
+    private static ReentrantLock lockJedis = new ReentrantLock();
+
+    private static JedisPool jedisPool = null;
 
     public Jedis getJedis(){
-        return jedisPool.getResource();
+        lockJedis.lock();
+        Jedis jedis = null;
+        try {
+            jedisPool=initPool();
+            jedis = jedisPool.getResource();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lockJedis.unlock();
+        }
+        return jedis;
+    }
+
+    private JedisPool initPool(){
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxIdle(10);
+        jedisPoolConfig.setMaxWaitMillis(1000);
+        // 连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
+        jedisPoolConfig.setBlockWhenExhausted(false);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, "127.0.0.1", 6379, 300000);
+        return jedisPool;
+    }
+
+    private void releaseJedis(Jedis jedis){
+        if(jedis!=null && jedisPool!=null){
+            jedisPool.returnResource(jedis);
+        }
     }
 
     /**
@@ -24,11 +54,33 @@ public class JedisUtil {
      * @param key
      * @return 成功返回value 失败返回null
      */
-    public String get(Jedis jedis,String key) {
-        return jedis.get(key);
+    public synchronized String get(String key) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            if (jedis == null) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            releaseJedis(jedis);
+        }
+            return jedis.get(key);
     }
 
-    public String set(Jedis jedis,String key,String value) {
+    public synchronized String set(String key,String value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            if (jedis == null) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            releaseJedis(jedis);
+        }
         return jedis.set(key,value);
     }
 
@@ -41,7 +93,18 @@ public class JedisUtil {
      * @param value
      * @return 成功返回1 如果存在 和 发生异常 返回 0
      */
-    public Long setnx(Jedis jedis,String key, String value) {
+    public synchronized Long setnx(String key, String value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            if (jedis == null) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            releaseJedis(jedis);
+        }
         return jedis.setnx(key, value);
     }
 
@@ -57,11 +120,33 @@ public class JedisUtil {
      * @param value
      * @return 返回给定 key 的旧值。当 key 没有旧值时，也即是， key 不存在时，返回 nil
      */
-    public String getSet(Jedis jedis,String key, String value) {
+    public synchronized String getSet(String key, String value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            if (jedis == null) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            releaseJedis(jedis);
+        }
         return jedis.getSet(key, value);
     }
 
-    public Long del(Jedis jedis,String key){
+    public synchronized Long del(String key){
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            if (jedis == null) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            releaseJedis(jedis);
+        }
         return jedis.del(key);
     }
 
@@ -72,19 +157,34 @@ public class JedisUtil {
      *            过期时间，单位：秒
      * @return 成功返回1 如果存在 和 发生异常 返回 0
      */
-    public Long expire(Jedis jedis,String key, int value) {
+    public synchronized Long expire(String key, int value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            if (jedis == null) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            releaseJedis(jedis);
+        }
         return jedis.expire(key, value);
     }
 
-    public Long ttl(Jedis jedis,String key){
+    public synchronized Long ttl(String key){
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            if (jedis == null) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            releaseJedis(jedis);
+        }
         return jedis.ttl(key);
     }
 
-    /**
-     * 返还到连接池
-     *
-     */
-    public void close() {
-        jedisPool.close();
-    }
 }

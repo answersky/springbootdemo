@@ -37,13 +37,13 @@ public class RedisLockTest {
                 public void run() {
                     String threadName = Thread.currentThread().getName();
                     Long threadId = Thread.currentThread().getId();
-                    boolean flag=redisLock.getLock(5000L,5000L,"count_key");
+                    boolean flag=redisLock.getLock(50L,5000L,"count_key");
+                    System.out.println("线程_"+threadId+":"+flag);
                     if(flag){
                         count++;
                         System.out.println(threadName+"["+threadId+"]"+"执行完的结果"+count);
                     }
                     redisLock.releaseLock("count_key");
-
                 }
             });
         }
@@ -55,15 +55,8 @@ public class RedisLockTest {
         Jedis jedis=jedisPool.getResource();
 //        Long va=jedisUtil.setnx(jedis,"count_key1","123");
 //        System.out.println(va);
-        String key=jedisUtil.get(jedis,"count_key1");
+        String key=jedisUtil.get("count_key1");
         System.out.println(key);
         jedis.close();
-    }
-
-    @Test
-    public void testLockSingleThread(){
-        boolean flag=redisLock.getLock(5000L,5000L,"count_key");
-        System.out.println(flag);
-        redisLock.releaseLock("count_key");
     }
 }

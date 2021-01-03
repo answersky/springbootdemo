@@ -33,12 +33,7 @@ public class RedisLock {
      * @return
      */
     public boolean getLock(long timeout,long acquireTime,String lockKey){
-        Jedis jedis=null;
         try {
-            Gson gson=new Gson();
-            System.out.println("jedisPool:"+jedisPool.toString());
-            jedis=jedisPool.getResource();
-            System.out.println("jedis:"+gson.toJson(jedis));
             String threadId = String.valueOf(Thread.currentThread().getId());
             System.out.println(threadId+"  开始获取锁");
             long current=System.currentTimeMillis();
@@ -50,56 +45,46 @@ public class RedisLock {
                 }
 
                 //setnx==1加锁，如果key已经存在则加锁失败返回0
-                if(jedisUtil.setnx(jedis,lockKey,threadId)==1){
+                if(jedisUtil.setnx(lockKey,threadId)==1){
                     System.out.println(threadId+"  获取锁成功");
                     //加锁后给锁设置一个过期时间=当前时间+过期超时时间
-                    Integer expireTime=Integer.parseInt(String.valueOf((System.currentTimeMillis()+timeout)/1000));
-                    jedisUtil.expire(jedis,lockKey,expireTime);
+                    Integer expireTime=Integer.parseInt(String.valueOf((timeout)/1000));
+                    jedisUtil.expire(lockKey,expireTime);
                     return true;
                 }
 
                 //防止redis在执行完setnx后宕机了，没有给锁设置过期时间
-                if(jedisUtil.ttl(jedis,lockKey)==-1){
-                    Integer expireTime=Integer.parseInt(String.valueOf((System.currentTimeMillis()+timeout)/1000));
-                    jedisUtil.expire(jedis,lockKey,expireTime);
+                if(jedisUtil.ttl(lockKey)==-1){
+                    Integer expireTime=Integer.parseInt(String.valueOf((timeout)/1000));
+                    jedisUtil.expire(lockKey,expireTime);
                 }
 
                 try {
                     System.out.println(threadId+"  未获取到锁，等待继续获取锁......");
-                    //再未获取到锁时休眠10ms后再继续获取锁
-                    Thread.sleep(10);
+                    //再未获取到锁时休眠20ms后再继续获取锁
+                    Thread.sleep(20);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if(jedis!=null){
-                jedisPool.returnResource(jedis);
-            }
         }
         return false;
     }
 
     public void releaseLock(String lockKey){
-        Jedis jedis=null;
         try {
-            jedis=jedisUtil.getJedis();
             //判断锁是否过期
             String threadId = String.valueOf(Thread.currentThread().getId());
             //判断当前线程id是否跟锁一样，一样表示是自己获取的锁
-            String lockValue=jedisUtil.get(jedis,lockKey);
+            String lockValue=jedisUtil.get(lockKey);
             if(threadId.equals(lockValue)){
                 System.out.println(threadId+"  释放锁");
-                jedisUtil.del(jedis,lockKey);
+                jedisUtil.del(lockKey);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if(jedis!=null){
-                jedisPool.returnResource(jedis);
-            }
         }
     }
 }
