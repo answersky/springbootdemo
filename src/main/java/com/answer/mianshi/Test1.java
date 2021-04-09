@@ -6,6 +6,10 @@ package com.answer.mianshi;
  */
 public class Test1 {
     public static void main(String[] args) {
+        //false
+        System.out.println(Integer.valueOf(1024)==Integer.valueOf(1024));
+        //true
+        System.out.println(Integer.valueOf(127)==Integer.valueOf(127));
         function(5);
     }
 

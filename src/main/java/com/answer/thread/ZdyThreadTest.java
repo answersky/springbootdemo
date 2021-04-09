@@ -16,7 +16,7 @@ public class ZdyThreadTest {
     public static void main(String[] args) {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-runner-%d").build();
         ExecutorService fixedThreadPool = new ThreadPoolExecutor(1,1,100L,TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(1024),namedThreadFactory);
+                new LinkedBlockingQueue<Runnable>(1024),namedThreadFactory,new ThreadPoolExecutor.AbortPolicy());
         List<String> list= Lists.newArrayList("1","2");
         fixedThreadPool.execute(new Runnable() {
             @Override
