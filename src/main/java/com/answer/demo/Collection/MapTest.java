@@ -21,5 +21,14 @@ public class MapTest {
         System.out.println(map.isEmpty());
 
 
+        Map<String,String> maps=new LinkedHashMap<>();
+        maps.put("a","aaaa");
+
+        Map<String,String> map2=new LinkedHashMap<>();
+        map2.put("sss","ssssss");
+        maps.putAll(map2);
+
+        System.out.println(maps);
+
     }
 }

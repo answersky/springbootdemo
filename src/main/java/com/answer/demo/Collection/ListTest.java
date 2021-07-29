@@ -19,10 +19,10 @@ public class ListTest {
         }*/
 
         List<String> ll = new ArrayList<>();
-//        ll.add("b");
+        ll.add("b");
 //        ll.add("a");
 //        ll.add("d");
-//        ll.add("c");
+        ll.add("c");
         List<String> l2 = new ArrayList<>();
         l2.add("a");
         l2.add("b");
@@ -38,11 +38,11 @@ public class ListTest {
 //        System.out.println(l2);
 
         //交集
-        ll.retainAll(l2);
-        System.out.println("交集："+ll);
+//        ll.retainAll(l2);
+//        System.out.println("交集："+ll);
 
-//        ll.removeAll(l2);
-//        System.out.println(ll);
+        ll.removeAll(l2);
+        System.out.println(ll);
 
 //        l2.removeAll(ll);
 //        System.out.println(l2);
@@ -57,8 +57,8 @@ public class ListTest {
 //        System.out.println(stringList);
 
 
-        List<String> orgList=Lists.newArrayList("12","12","14");
-        orgList.subList(-1,5);
-        System.out.println(orgList);
+//        List<String> orgList=Lists.newArrayList("12","12","14");
+//        orgList.subList(-1,5);
+//        System.out.println(orgList);
     }
 }

@@ -20,15 +20,16 @@ public class ReentrantLockTest implements Runnable{
 
     @Override
     public void run() {
-        for (int i=0;i<100;i++) {
+
             try {
                 reentrantLock.lock();
-                System.out.println("lock-"+Thread.currentThread().getName());
+                for (int i=0;i<100;i++) {
+                    System.out.println("lock-"+i+":"+Thread.currentThread().getName());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }finally {
                 reentrantLock.unlock();
             }
-        }
     }
 }
