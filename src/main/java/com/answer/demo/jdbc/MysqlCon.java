@@ -9,7 +9,7 @@ import java.sql.*;
 public class MysqlCon {
     public static void main(String[] args) {
         String sql="select * from user";
-        String url="jdbc:mysql://localhost:3306/bee";
+        String url="jdbc:mysql://localhost:3306/test";
         String username="root";
         String password="123456";
         doSql(sql,url,username,password);

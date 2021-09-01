@@ -12,7 +12,7 @@ public class HutoolBloom {
         hutool.add("123");
         hutool.add("234");
         hutool.add("3345");
-        System.out.println(hutool.contains("234"));
+        System.out.println(hutool.contains("1234"));
 
 
     }

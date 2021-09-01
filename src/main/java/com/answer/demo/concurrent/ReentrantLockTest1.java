@@ -25,7 +25,7 @@ public class ReentrantLockTest1 {
         new Thread(() -> {
             System.out.println("A:"+Thread.currentThread().getName());
             try {
-                for (int i = 1; i <= 10; i++) {
+                for (int i = 1; i <= 2; i++) {
                     lock.lock();
                     if (stauts != 1) {
                         conditionA.await();
@@ -46,7 +46,7 @@ public class ReentrantLockTest1 {
         new Thread(() -> {
             try {
                 System.out.println("B:"+Thread.currentThread().getName());
-                for (int i = 1; i <= 10; i++) {
+                for (int i = 1; i <= 2; i++) {
                     lock.lock();
                     if (stauts != 2) {
                         conditionB.await();
@@ -66,7 +66,7 @@ public class ReentrantLockTest1 {
         new Thread(() -> {
             try {
                 System.out.println("C:"+Thread.currentThread().getName());
-                for (int i = 1; i <= 10; i++) {
+                for (int i = 1; i <= 2; i++) {
                     lock.lock();
                     if (stauts != 3) {
                         conditionC.await();
