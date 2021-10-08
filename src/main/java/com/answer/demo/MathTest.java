@@ -17,7 +17,7 @@ public class MathTest {
         System.out.println(price);
 
 
-        List<BigDecimal> aa= Lists.newArrayList(new BigDecimal("1"),new BigDecimal("23"),null);
+//        List<BigDecimal> aa= Lists.newArrayList(new BigDecimal("1"),new BigDecimal("23"),null);
         List<BigDecimal> aas= new ArrayList<>();
         System.out.println(Collections.min(aas));
     }
