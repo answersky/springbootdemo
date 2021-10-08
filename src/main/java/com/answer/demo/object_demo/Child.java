@@ -14,6 +14,11 @@ public class Child extends Parent{
 //        super(age);
     }
 
+   /* @Override
+    public void eat(){
+        System.out.println("eating rice");
+    }*/
+
     @Override
     public String toString() {
         return "Child{" +
@@ -26,5 +31,8 @@ public class Child extends Parent{
         Child child=new Child(12);
         child.id=3;
         System.out.println(child);
+        child.eat();
+        Parent parent=new Child();
+        parent.eat();
     }
 }

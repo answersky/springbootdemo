@@ -4,6 +4,7 @@ package com.answer.demo.Collection;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,5 +61,8 @@ public class ListTest {
 //        List<String> orgList=Lists.newArrayList("12","12","14");
 //        orgList.subList(-1,5);
 //        System.out.println(orgList);
+
+        List<Integer> bigList=new ArrayList<>();
+        System.out.println(Collections.max(bigList));
     }
 }

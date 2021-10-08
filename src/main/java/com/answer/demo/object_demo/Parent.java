@@ -9,7 +9,11 @@ public class Parent {
     public Parent(){
 
     }
-    /*public Parent(Integer id){
+    public Parent(Integer id){
         this.id=id;
-    }*/
+    }
+
+    public void eat(){
+        System.out.println("eating");
+    }
 }

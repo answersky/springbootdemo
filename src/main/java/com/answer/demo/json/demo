@@ -1,0 +1,5 @@
+{
+  "@type":"com.answer.demo.json.MyJson",
+  "name":"answer",
+  "age":"12"
+}

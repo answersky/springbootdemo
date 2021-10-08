@@ -69,7 +69,7 @@ public class RunApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments applicationArguments){
         log.error("run method execute!!!");
-//        dynamicProperties.initConfig();
+        dynamicProperties.initConfig();
 
         try {
             ascpectTestService.getException(0);
