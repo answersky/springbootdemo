@@ -1,6 +1,8 @@
 package com.answer;
 
 import com.answer.config.DynamicProperties;
+import com.answer.demo.mybatisDemo.MyUserservice;
+import com.answer.demo.mybatisDemo.MybatisBeanRegister;
 import com.answer.service.AscpectTestService;
 import com.answer.signin.IDoSignService;
 import com.answer.spring_listener.SpringEvent;
@@ -15,6 +17,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -34,6 +37,7 @@ import java.util.TreeMap;
 @EnableScheduling
 //开启切面
 @EnableAspectJAutoProxy
+@Import(MybatisBeanRegister.class)
 public class RunApplication implements ApplicationRunner {
     private static final Logger log=LoggerFactory.getLogger(RunApplication.class);
 
@@ -49,6 +53,7 @@ public class RunApplication implements ApplicationRunner {
     private JedisPool jedisPool;
 
 
+
     public static void main(String[] args) {
 //        SpringApplication.run(RunApplication.class,args);
         SpringApplication application = new SpringApplication(RunApplication.class);
@@ -59,6 +64,8 @@ public class RunApplication implements ApplicationRunner {
         context.publishEvent(springEvent);
         log.error("logback日志打印");
 
+        MyUserservice userservice= (MyUserservice) context.getBean("myUserservice");
+        userservice.test();
     }
 
     /**
@@ -69,13 +76,13 @@ public class RunApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments applicationArguments){
         log.error("run method execute!!!");
-        dynamicProperties.initConfig();
+        /*dynamicProperties.initConfig();
 
         try {
             ascpectTestService.getException(0);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         //测试redis bitmap实现签到
 //        testRedisBitMapSign();
