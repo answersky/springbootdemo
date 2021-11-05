@@ -1,22 +1,12 @@
 package com.answer.model;
 
 /**
- * created by liufeng
- * 2021/10/12
+ * Created by liuf on 2021/11/6.
  */
-public class Student {
+public class User {
     private int id;
     private String name;
     private int age;
-
-    public Student(){
-
-    }
-    public Student(int id,String name,int age){
-        this.id=id;
-        this.name=name;
-        this.age=age;
-    }
 
     public int getId() {
         return id;
@@ -44,7 +34,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
