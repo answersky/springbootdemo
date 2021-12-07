@@ -15,12 +15,11 @@ public class RabbitmqMsgListener {
 
     @RabbitListener(queues = "topic.message")
     @RabbitHandler
-    public void dealMsg(Integer data,Message message){
+    public void dealMsg(Message message){
         try {
             System.out.println(message);
-            System.out.println(data);
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

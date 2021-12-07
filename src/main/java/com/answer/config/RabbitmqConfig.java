@@ -20,11 +20,6 @@ public class RabbitmqConfig {
         return new Queue("topic.message");
     }
 
-    @Bean(name="messages")
-    public Queue queueMessages() {
-        return new Queue("topic.messages");
-    }
-
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange("exchange");
@@ -33,11 +28,5 @@ public class RabbitmqConfig {
     @Bean
     Binding bindingExchangeMessage(@Qualifier("message") Queue queueMessage, TopicExchange exchange) {
         return BindingBuilder.bind(queueMessage).to(exchange).with("topic.message");
-    }
-
-    @Bean
-    Binding bindingExchangeMessages(@Qualifier("messages") Queue queueMessages, TopicExchange exchange) {
-        //*表示一个词,#表示零个或多个词
-        return BindingBuilder.bind(queueMessages).to(exchange).with("topic.#");
     }
 }
