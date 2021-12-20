@@ -1,10 +1,12 @@
 package com.answer.service.rabbitmq;
 
+import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.converter.MessageConversionException;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 /**
  * @author liufeng
@@ -13,13 +15,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class RabbitmqMsgListener {
 
+    int count  = 0;
+
     @RabbitListener(queues = "topic.message")
     @RabbitHandler
-    public void dealMsg(Message message){
+    public void dealMsg(Message message, Channel channel) throws IOException {
+        System.out.println(message);
         try {
-            System.out.println(message);
+            int b = 1/0;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("还是不行？？");
         }
     }
 }
