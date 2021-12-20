@@ -21,10 +21,6 @@ public class RabbitmqMsgListener {
     @RabbitHandler
     public void dealMsg(Message message, Channel channel) throws IOException {
         System.out.println(message);
-        try {
-            int b = 1/0;
-        } catch (Exception e) {
-            throw new RuntimeException("还是不行？？");
-        }
+        int b = 1/0;
     }
 }
