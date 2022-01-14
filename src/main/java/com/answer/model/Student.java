@@ -6,7 +6,9 @@ package com.answer.model;
  */
 public class Student {
     private int id;
+    @Api(name = "名称")
     private String name;
+    @Api(name = "年龄")
     private int age;
 
     public Student(int id,String name,int age){
