@@ -4,7 +4,6 @@ package com.answer.demo.Collection;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,7 +61,10 @@ public class ListTest {
 //        orgList.subList(-1,5);
 //        System.out.println(orgList);
 
-        List<Integer> bigList=new ArrayList<>();
-        System.out.println(Collections.max(bigList));
+        List<Integer> bigList = Lists.newArrayList(1, 2, 3, 4);
+        for (int i = bigList.size() - 1; i >= 0; i--) {
+            bigList.remove(i);
+            System.out.println(bigList);
+        }
     }
 }
