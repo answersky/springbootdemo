@@ -1,6 +1,5 @@
 package com.answer.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,10 @@ public class ValueAnnotateService {
     private Environment environment;
 
 
-    public void systemValue(){
-        System.out.println("---->"+environment.getProperty("host"));
+    public void systemValue() throws Exception {
+        System.out.println("---->" + environment.getProperty("host"));
         System.out.println(environment.getProperty("answer.name"));
+        throw new Exception("test Exception");
     }
 
 }

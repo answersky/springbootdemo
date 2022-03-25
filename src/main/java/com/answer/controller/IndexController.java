@@ -17,18 +17,24 @@ public class IndexController {
 
     @RequestMapping("/index")
     @ResponseBody
-    public String index(){
+    public String index() throws Exception {
         valueAnnotateService.systemValue();
         return "2";
     }
 
     @RequestMapping("/")
-    public String indexPage(){
+    public String indexPage() {
         return "index";
     }
 
     @RequestMapping("/indexDB")
-    public String indexDBPage(){
+    public String indexDBPage() {
         return "indexDB";
+    }
+
+
+    @RequestMapping("/testException")
+    public void testException() throws Exception {
+        throw new Exception("test exception");
     }
 }
