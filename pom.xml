@@ -186,6 +186,13 @@
             <artifactId>poi-ooxml</artifactId>
             <version>3.16</version>
         </dependency>
+
+        <!--        自定义springboot starter-->
+        <dependency>
+            <groupId>com.answer</groupId>
+            <artifactId>demo-spring-boot-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
