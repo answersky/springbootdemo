@@ -1,9 +1,13 @@
 package com.answer.utlis;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlCursor;
 import org.assertj.core.util.Lists;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTbl;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -25,22 +29,19 @@ public class DocUtil {
     }
 
     public static void writeWord() throws IOException {
-        String templatePath = "template/moban.docx";
+        String templatePath = "template/demo.docx";
         Resource resource = new ClassPathResource(templatePath);
         InputStream inputStream = resource.getInputStream();
         XWPFDocument docx = new XWPFDocument(inputStream);
 
-        List<XWPFParagraph> pphs = docx.getParagraphs();
-        List<XWPFRun> runList = new ArrayList<>();
-        for (int i = 0; i < pphs.size(); i++) {
-            XWPFParagraph xwpfParagraph = pphs.get(i);
-            //获取该段所有的文本对象
-            List<XWPFRun> runs = DocUtil.replaceText(xwpfParagraph);
-            runList.addAll(runs);
+        List<XWPFParagraph> paragraphs = docx.getParagraphs();
+        for (int i = 0; i < paragraphs.size(); i++) {
+            XWPFParagraph xwpfParagraph = paragraphs.get(i);
+            DocUtil.replaceText(xwpfParagraph);
         }
 
-        for (int i = 0; i < pphs.size(); i++) {
-            XWPFParagraph xwpfParagraph = pphs.get(i);
+        for (int i = 0; i < paragraphs.size(); i++) {
+            XWPFParagraph xwpfParagraph = paragraphs.get(i);
             List<XWPFRun> xwpfRuns = xwpfParagraph.getRuns();
             for (int k = 0; k < xwpfRuns.size(); k++) {
                 XWPFRun xwpfRun = xwpfRuns.get(k);
@@ -72,6 +73,14 @@ public class DocUtil {
                 if (xwpfRun.toString().contains("${equiments}")) {
                     String str = xwpfRun.toString();
                     xwpfRun.setText(str.replace("${equiments}", "设备1 仪器2 仪器3"), 0);
+                }
+
+                if (xwpfRun.toString().contains("${inspectionItemList}")) {
+                    List<String> data = Lists.newArrayList("30℃", "20℃", "20g", "10g/s");
+                    List<List<String>> datas = new ArrayList<>();
+                    datas.add(data);
+                    XmlCursor tableCursor = xwpfParagraph.getCTP().newCursor();
+                    insertTable(tableCursor, docx, Lists.newArrayList("柱温", "进样盘温度", "进样量", "流速"), datas);
                 }
 
                 if (xwpfRun.toString().contains("${pic}")) {
@@ -148,16 +157,51 @@ public class DocUtil {
             }
         }
 
+        //创建表格
+        XWPFTable xwpfTable = docx.createTable(2, 2);
+        xwpfTable.getRow(0).getCell(0).setText("aa");
+        xwpfTable.getRow(0).getCell(1).setText("bb");
+        XWPFTableRow tableRow = xwpfTable.getRow(1);
+        tableRow.getCell(0).setText("12");
+        tableRow.getCell(1).setText("34");
 
         //获取文档的表格
         List<XWPFTable> tables = docx.getTables();
         XWPFTable table = tables.get(0);
         //第一行为title  第二行填充数据
-        XWPFTableRow row = table.getRow(1);
-        List<XWPFTableCell> cells = row.getTableCells();
-        for (XWPFTableCell cell : cells) {
-            cell.setText("10");
+        for (XWPFTableRow row : table.getRows()) {
+            List<XWPFTableCell> cells = row.getTableCells();
+            for (XWPFTableCell cell : cells) {
+                String cellValue = cell.getText();
+                if ("${productBatchNo}".equals(cellValue)) {
+                    cell.setText("10");
+                }
+
+                //在表格指定的列中添加表格
+                if ("${inspectionItemList}".equals(cellValue)) {
+                    List<XWPFParagraph> pps = cell.getParagraphs();
+                    for (XWPFParagraph p : pps) {
+                        DocUtil.replaceText(p);
+                        for (XWPFRun r : p.getRuns()) {
+                            String text = r.getText(0);
+                            if ("${inspectionItemList}".equals(text)) {
+                                r.setText("", 0);
+                            }
+                        }
+                    }
+                    XWPFParagraph paragraph = cell.addParagraph();
+                    XmlCursor cursor = paragraph.getCTP().newCursor();
+                    String uri = CTTbl.type.getName().getNamespaceURI();
+                    String localPart = "tbl";
+                    cursor.beginElement(localPart, uri);
+                    cursor.toParent();
+                    CTTbl t = (CTTbl) cursor.getObject();
+                    XWPFTable newT = new XWPFTable(t, cell);
+                    inserInfo(newT);
+                }
+            }
         }
+
 
         //创建表格
         List<String> data = Lists.newArrayList("30℃", "20℃", "20g", "10g/s");
@@ -172,7 +216,7 @@ public class DocUtil {
         os.close();
     }
 
-    public static List<XWPFRun> replaceText(XWPFParagraph para) {
+    public static void replaceText(XWPFParagraph para) {
         List<XWPFRun> runs = para.getRuns();
         //合并 "产品规格：${"，"productSpecification"，"}"
         String str = "";
@@ -186,8 +230,31 @@ public class DocUtil {
             para.removeRun(i);
         }
         para.insertNewRun(0).setText(str);
-        return runs;
     }
+
+    private static void inserInfo(XWPFTable table) {
+        List<String> data = Lists.newArrayList("1", "2", "3", "4", "5", "6");//需要插入的数据
+        XWPFTableRow row = table.getRow(0);
+        for (int col = 1; col < 6; col++) {//默认会创建一列，即从第2列开始
+            // 第一行创建了多少列，后续增加的行自动增加列
+            CTTcPr cPr = row.createCell().getCTTc().addNewTcPr();
+            CTTblWidth width = cPr.addNewTcW();
+        }
+        row.getCell(0).setText("指标");
+        row.getCell(1).setText("指标说明");
+        row.getCell(2).setText("公式");
+        row.getCell(3).setText("参考值");
+        row.getCell(4).setText("说明");
+        row.getCell(5).setText("计算值");
+
+        XWPFTableRow row1 = table.createRow();
+        ;
+        for (int i = 0; i < 6; i++) {
+            String item = data.get(i);
+            row1.getCell(i).setText(item);
+        }
+    }
+
 
     /**
      * 获取文件模板对象
@@ -227,6 +294,45 @@ public class DocUtil {
             }
         }
 
+    }
+
+    public static void insertTable(XmlCursor cursor, XWPFDocument docx, List<String> titles, List<List<String>> tableDatas) {
+        System.out.println(titles + "title");
+        System.out.println(tableDatas + "tableDatas");
+
+        XWPFTable xwpfTable = docx.insertNewTbl(cursor);
+        XWPFTableRow titleRow = xwpfTable.getRow(0);
+        //创建表格
+        int cell = titles.size();
+        for (int index = 0; index < cell; index++) {
+            if (index > 0) {
+                titleRow.addNewTableCell().setText(titles.get(index));
+            } else {
+                //设置表头
+                titleRow.getCell(index).setText(titles.get(index));
+            }
+
+        }
+        if (null != tableDatas) {
+
+
+            for (int index = 0; index < tableDatas.size(); index++) {
+                //设置表格数据
+                XWPFTableRow tableRow = xwpfTable.createRow();
+                List<String> datas = tableDatas.get(index);
+                for (int k = 0; k < titles.size(); k++) {
+                    XWPFTableCell cell1 = tableRow.getCell(k);
+                    if (null != cell1) {
+                        String s = datas.get(k);
+                        if (StringUtils.isNotBlank(s)) {
+                            cell1.setText(s);
+                        }
+
+                    }
+
+                }
+            }
+        }
     }
 
 }
