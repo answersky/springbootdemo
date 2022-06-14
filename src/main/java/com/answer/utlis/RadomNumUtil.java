@@ -3,6 +3,8 @@ package com.answer.utlis;
 import java.util.Random;
 
 /**
+ * 随机数
+ *
  * @author liufeng
  * @data 2021/11/5 17:02
  */

@@ -171,10 +171,15 @@ public class DocUtil {
         //第一行为title  第二行填充数据
         for (XWPFTableRow row : table.getRows()) {
             List<XWPFTableCell> cells = row.getTableCells();
+            boolean removeFlag = false;
             for (XWPFTableCell cell : cells) {
                 String cellValue = cell.getText();
                 if ("${productBatchNo}".equals(cellValue)) {
                     cell.setText("10");
+                }
+                if ("${storageCondition}".equals(cellValue)) {
+                    removeFlag = true;
+                    break;
                 }
 
                 //在表格指定的列中添加表格
@@ -189,17 +194,14 @@ public class DocUtil {
                             }
                         }
                     }
-                    XWPFParagraph paragraph = cell.addParagraph();
-                    XmlCursor cursor = paragraph.getCTP().newCursor();
-                    String uri = CTTbl.type.getName().getNamespaceURI();
-                    String localPart = "tbl";
-                    cursor.beginElement(localPart, uri);
-                    cursor.toParent();
-                    CTTbl t = (CTTbl) cursor.getObject();
-                    XWPFTable newT = new XWPFTable(t, cell);
-                    inserInfo(newT);
+
+                    List<String> titles = Lists.newArrayList("指标", "指标说明", "公式", "参考值", "说明", "计算值");
+                    //需要插入的数据
+                    List<String> datas = Lists.newArrayList("1", "2", "3", "4", "5", "6");
+                    inserTableToCell(cell, titles, datas);
                 }
             }
+
         }
 
 
@@ -232,25 +234,39 @@ public class DocUtil {
         para.insertNewRun(0).setText(str);
     }
 
-    private static void inserInfo(XWPFTable table) {
-        List<String> data = Lists.newArrayList("1", "2", "3", "4", "5", "6");//需要插入的数据
+    /**
+     * 在指定列插入表格
+     *
+     * @param cell
+     * @param titles
+     * @param datas
+     */
+    private static void inserTableToCell(XWPFTableCell cell, List<String> titles, List<String> datas) {
+        XWPFParagraph paragraph = cell.addParagraph();
+        XmlCursor cursor = paragraph.getCTP().newCursor();
+        String uri = CTTbl.type.getName().getNamespaceURI();
+        String localPart = "tbl";
+        cursor.beginElement(localPart, uri);
+        cursor.toParent();
+        CTTbl t = (CTTbl) cursor.getObject();
+        XWPFTable table = new XWPFTable(t, cell);
+
+        int size = titles.size();
         XWPFTableRow row = table.getRow(0);
-        for (int col = 1; col < 6; col++) {//默认会创建一列，即从第2列开始
+        for (int col = 1; col < size; col++) {//默认会创建一列，即从第2列开始
             // 第一行创建了多少列，后续增加的行自动增加列
             CTTcPr cPr = row.createCell().getCTTc().addNewTcPr();
             CTTblWidth width = cPr.addNewTcW();
         }
-        row.getCell(0).setText("指标");
-        row.getCell(1).setText("指标说明");
-        row.getCell(2).setText("公式");
-        row.getCell(3).setText("参考值");
-        row.getCell(4).setText("说明");
-        row.getCell(5).setText("计算值");
+
+        for (int i = 0; i < size; i++) {
+            String title = titles.get(i);
+            row.getCell(i).setText(title);
+        }
 
         XWPFTableRow row1 = table.createRow();
-        ;
-        for (int i = 0; i < 6; i++) {
-            String item = data.get(i);
+        for (int i = 0; i < size; i++) {
+            String item = datas.get(i);
             row1.getCell(i).setText(item);
         }
     }

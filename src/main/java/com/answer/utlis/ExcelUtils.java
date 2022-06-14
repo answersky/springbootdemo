@@ -2,12 +2,9 @@ package com.answer.utlis;
 
 import cn.hutool.core.convert.Convert;
 import com.answer.model.ExcelModel;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.util.Lists;
 
@@ -109,10 +106,10 @@ public class ExcelUtils {
         }
         switch (cell.getCellType()) {
             //数值型
-            case Cell.CELL_TYPE_NUMERIC:
-                if (HSSFDateUtil.isCellDateFormatted(cell)) {
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
                     //如果是date类型则 ，获取该cell的date值
-                    Date date = HSSFDateUtil.getJavaDate(cell.getNumericCellValue());
+                    Date date = DateUtil.getJavaDate(cell.getNumericCellValue());
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                     value = format.format(date);
                     ;
@@ -129,20 +126,20 @@ public class ExcelUtils {
                 }
                 break;
             //字符串类型
-            case Cell.CELL_TYPE_STRING:
+            case STRING:
                 value = cell.getStringCellValue().toString();
                 break;
             // 公式类型
-            case Cell.CELL_TYPE_FORMULA:
+            case FORMULA:
                 //读公式计算值
                 value = String.valueOf(cell.getNumericCellValue());
                 // 如果获取的数据值为非法值,则转换为获取字符串
-                if (value.equals("NaN")) {
+                if (("NaN").equals(value)) {
                     value = cell.getStringCellValue().toString();
                 }
                 break;
             // 布尔类型
-            case Cell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 value = " " + cell.getBooleanCellValue();
                 break;
             default:
