@@ -7,6 +7,7 @@ package com.answer.model;
 public class Student {
     private int id;
     @Api(name = "名称")
+    @Compare(same = true)
     private String name;
     @Api(name = "年龄")
     private int age;
