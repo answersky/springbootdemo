@@ -5,9 +5,7 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlCursor;
 import org.assertj.core.util.Lists;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTbl;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -206,10 +204,12 @@ public class DocUtil {
 
 
         //创建表格
-        List<String> data = Lists.newArrayList("30℃", "20℃", "20g", "10g/s");
+        List<String> data = Lists.newArrayList("30℃", "20℃", "20g", "10g/s", "");
+        List<String> data2 = Lists.newArrayList("", "20℃", "20g", "10g/s", "table");
         List<List<String>> datas = new ArrayList<>();
         datas.add(data);
-        createTable(docx, Lists.newArrayList("柱温", "进样盘温度", "进样量", "流速"), datas);
+        datas.add(data2);
+        createTableAndMerge(docx, Lists.newArrayList("柱温", "进样盘温度", "进样量", "流速", "标准"), datas);
 
         //输出到write.docx
         OutputStream os = new FileOutputStream("D:\\app\\write.docx");
@@ -260,15 +260,35 @@ public class DocUtil {
         }
 
         for (int i = 0; i < size; i++) {
+            tableTextCenter(row, i);
             String title = titles.get(i);
             row.getCell(i).setText(title);
         }
 
         XWPFTableRow row1 = table.createRow();
         for (int i = 0; i < size; i++) {
+            tableTextCenter(row1, i);
             String item = datas.get(i);
             row1.getCell(i).setText(item);
         }
+
+        //开始合并列，将第一行的4,5列合并
+        mergeLine(table, 1, 3, 4);
+    }
+
+
+    /**
+     * 表格文字居中
+     *
+     * @param row   行
+     * @param index 列所在位置
+     */
+    public static void tableTextCenter(XWPFTableRow row, int index) {
+        XWPFTableCell tableCell = row.getCell(index);
+        CTTc cttc = tableCell.getCTTc();
+        CTTcPr ctPr = cttc.addNewTcPr();
+        ctPr.addNewVAlign().setVal(STVerticalJc.CENTER);
+        cttc.getPList().get(0).addNewPPr().addNewJc().setVal(STJc.CENTER);
     }
 
 
@@ -284,6 +304,68 @@ public class DocUtil {
         InputStream inputStream = resource.getInputStream();
         return new XWPFDocument(inputStream);
     }
+
+    public static void createTableAndMerge(XWPFDocument docx, List<String> titles, List<List<String>> tableDatas) {
+        //创建表格
+        int row = tableDatas.size() + 1;
+        int cell = titles.size();
+        XWPFTable xwpfTable = docx.createTable(row, cell);
+        for (int index = 0; index < cell; index++) {
+            //设置表头
+            xwpfTable.getRow(0).getCell(index).setText(titles.get(index));
+        }
+
+        for (int index = 0; index < tableDatas.size(); index++) {
+            //设置表格数据
+            XWPFTableRow tableRow = xwpfTable.getRow(index + 1);
+            List<String> datas = tableDatas.get(index);
+            for (int k = 0; k < titles.size(); k++) {
+                if ("table".equals(datas.get(k))) {
+                    //插入表格
+                    List<String> titleList = Lists.newArrayList("指标", "指标说明", "公式", "参考值", "说明", "计算值");
+                    //需要插入的数据
+                    List<String> dataList = Lists.newArrayList("1", "2", "3", "4", "5", "6");
+                    XWPFTableCell tableCell = tableRow.getCell(k);
+                    inserTableToCell(tableCell, titleList, dataList);
+                } else {
+                    tableRow.getCell(k).setText(datas.get(k));
+                }
+            }
+        }
+
+        //开始合并列，将第一行的4,5列合并
+        mergeLine(xwpfTable, 1, 3, 4);
+
+        //合并行，将第1行跟第2行的第一列数据合并
+        mergeColumn(xwpfTable, 0, 1, 2);
+
+    }
+
+    //row 指定行、fromCell 开始列数、toCell 结束列数。
+    public static void mergeLine(XWPFTable table, int row, int fromCell, int toCell) {
+        for (int cellIndex = fromCell; cellIndex <= toCell; cellIndex++) {
+            XWPFTableCell cell = table.getRow(row).getCell(cellIndex);
+            if (cellIndex == fromCell) {
+                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.RESTART);
+            } else {
+                cell.getCTTc().addNewTcPr().addNewHMerge().setVal(STMerge.CONTINUE);
+            }
+        }
+    }
+
+    // word表格跨行并单元格
+    //col 指定列、fromRow 开始行、toRow 结束行。
+    public static void mergeColumn(XWPFTable table, int col, int fromRow, int toRow) {
+        for (int rowIndex = fromRow; rowIndex <= toRow; rowIndex++) {
+            XWPFTableCell cell = table.getRow(rowIndex).getCell(col);
+            if (rowIndex == fromRow) {
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
+            } else {
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+            }
+        }
+    }
+
 
     /**
      * 创建表格填充数据
