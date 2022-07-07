@@ -16,6 +16,27 @@ import java.util.Date;
  */
 public class DateUtil {
     public static void main(String[] args) throws ParseException {
+        FastDateFormat fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd");
+        FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+        String effectDate = "2022-07-03";
+        Date effect = fastDateFormat.parse(effectDate);
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(effect);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        Date time = calendar.getTime();
+        String timeStr = fastDateFormat.format(time);
+        System.out.println(timeStr);
+        Date date = null;
+        try {
+            date = format.parse(timeStr + " 00:00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println((new Date()).after(date) ? "过期" : "有效");
+
+
         System.out.println("前一天凌晨：" + preDayToDawn(-1));
         System.out.println("前一天：" + preDay(-1));
         System.out.println("后一天：" + nextDay(1));

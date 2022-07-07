@@ -1,18 +1,20 @@
 package com.answer.utlis;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlCursor;
 import org.assertj.core.util.Lists;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,6 +182,40 @@ public class DocUtil {
                     break;
                 }
 
+                if ("${standardBasis}".equals(cellValue)) {
+                    List<XWPFParagraph> pps = cell.getParagraphs();
+                    for (XWPFParagraph p : pps) {
+                        DocUtil.replaceText(p);
+                        for (XWPFRun r : p.getRuns()) {
+                            String text = r.getText(0);
+                            if ("${standardBasis}".equals(text)) {
+                                r.setText("", 0);
+                            }
+                        }
+                    }
+                    String html = "<h1><strong>1&nbsp;产品功能说明</strong></h1>\n" +
+                            "\n" +
+                            "<h2><strong>1.1&nbsp;配置中心</strong></h2>\n" +
+                            "\n" +
+                            "<h3><strong> 1.1.1&nbsp;模块管理</strong></h3><p>这是html斜体文本</p><p><table cellpadding=\"5\" style=\"border-collapse: collapse;\">" +
+                            "       <tr>\n" +
+                            "              <td>中文</td>\n" +
+                            "              <td>中文</td>\n" +
+                            "              <td>中文</td>\n" +
+                            "              <td>中文</td>\n" +
+                            "       </tr>\n" +
+                            "       <tr>\n" +
+                            "              <td>中文</td>\n" +
+                            "              <td>中文</td>\n" +
+                            "              <td>中文</td>\n" +
+                            "              <td>中文</td>\n" +
+                            "       </tr>\n" +
+                            "</table></p><img src=\"12.png\"/><img src=\"12.png\"/><li>结束</li>";
+//                    html=HtmlUtil.escape(html);
+                    resolveHtml(html, docx, pps.get(0), cell);
+
+                }
+
                 //在表格指定的列中添加表格
                 if ("${inspectionItemList}".equals(cellValue)) {
                     List<XWPFParagraph> pps = cell.getParagraphs();
@@ -210,6 +246,7 @@ public class DocUtil {
         datas.add(data);
         datas.add(data2);
         createTableAndMerge(docx, Lists.newArrayList("柱温", "进样盘温度", "进样量", "流速", "标准"), datas);
+
 
         //输出到write.docx
         OutputStream os = new FileOutputStream("D:\\app\\write.docx");
@@ -431,6 +468,165 @@ public class DocUtil {
                 }
             }
         }
+    }
+
+    public static void addElement(Document document) {
+        if (ObjectUtil.isEmpty(document)) {
+            throw new NullPointerException("不允许为空的对象添加元素");
+        }
+        Elements elements = document.getAllElements();
+        for (Element e : elements) {
+            String attrName = ElementEnum.getValueByCode(e.tag().getName());
+            if (!StringUtils.isEmpty(attrName)) {
+                e.attr(CommonConStant.COMMONATTR, attrName);
+            }
+        }
+    }
+
+    /**
+     * 将富文本内容写入到Word
+     * 因富文本样式种类繁多，不能一一枚举，目前实现了H1、H2、H3、段落、图片、表格枚举
+     *
+     * @param ritchText 富文本内容
+     * @param doc       需要写入富文本内容的Word 写入图片和表格需要用到
+     * @param paragraph
+     */
+    public static void resolveHtml(String ritchText, XWPFDocument doc, XWPFParagraph paragraph, XWPFTableCell cell) {
+        Document document = Jsoup.parseBodyFragment(ritchText, "UTF-8");
+        try {
+            // 添加固定元素
+            addElement(document);
+            Elements elements = document.select("[" + CommonConStant.COMMONATTR + "]");
+            for (Element em : elements) {
+                XWPFParagraph ph = cell.addParagraph();
+                XmlCursor xmlCursor = ph.getCTP().newCursor();
+                switch (em.attr(CommonConStant.COMMONATTR)) {
+                    case "title":
+                        break;
+                    case "subtitle":
+                        break;
+                    case "imgurl":
+                        String url = em.attr("src");
+                        Resource re = new ClassPathResource(url);
+                        InputStream inputStream = re.getInputStream();
+                        XWPFParagraph imgurlparagraph = ph;
+                        //居中
+                        ParagraphStyleUtil.setImageCenter(imgurlparagraph);
+                        imgurlparagraph.createRun().addPicture(inputStream, XWPFDocument.PICTURE_TYPE_PNG, "图片.jpeg", Units.toEMU(200), Units.toEMU(200));
+                        closeStream(inputStream);
+                        break;
+                    case "imgbase64":
+                        break;
+                    case "table":
+                        String uri = CTTbl.type.getName().getNamespaceURI();
+                        String localPart = "tbl";
+                        xmlCursor.beginElement(localPart, uri);
+                        xmlCursor.toParent();
+                        CTTbl t = (CTTbl) xmlCursor.getObject();
+                        XWPFTable xwpfTable = new XWPFTable(t, cell);
+                        addTable(xwpfTable, em);
+                        // 设置表格居中
+                        ParagraphStyleUtil.setTableLocation(xwpfTable, "center");
+                        // 设置内容居中
+                        ParagraphStyleUtil.setCellLocation(xwpfTable, "CENTER", "center");
+                        break;
+                    case "h1":
+                        XWPFParagraph h1paragraph1 = ph;
+                        XWPFRun xwpfRun_1 = h1paragraph1.createRun();
+                        xwpfRun_1.setText(em.text());
+                        xwpfRun_1.addBreak(BreakType.TEXT_WRAPPING);
+                        // 设置字体
+                        ParagraphStyleUtil.setTitle(xwpfRun_1, TitleFontEnum.H1.getTitle());
+                        break;
+                    case "h2":
+                        XWPFParagraph h2paragraph = ph;
+                        XWPFRun xwpfRun_2 = h2paragraph.createRun();
+                        xwpfRun_2.setText(em.text());
+                        xwpfRun_2.addBreak(BreakType.TEXT_WRAPPING);
+                        // 设置字体
+                        ParagraphStyleUtil.setTitle(xwpfRun_2, TitleFontEnum.H2.getTitle());
+                        break;
+                    case "h3":
+                        XWPFParagraph h3paragraph = ph;
+                        XWPFRun xwpfRun_3 = h3paragraph.createRun();
+                        xwpfRun_3.setText(em.text());
+                        xwpfRun_3.addBreak(BreakType.TEXT_WRAPPING);
+                        // 设置字体
+                        ParagraphStyleUtil.setTitle(xwpfRun_3, TitleFontEnum.H3.getTitle());
+                        break;
+                    case "paragraph":
+                        XWPFParagraph paragraphd = ph;
+                        XWPFRun paraRun = paragraphd.createRun();
+                        paraRun.setText(em.text());
+                        paraRun.addBreak(BreakType.TEXT_WRAPPING);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 将富文本的表格转换为Word里面的表格
+     */
+    private static void addTable(XWPFTable xwpfTable, Element table) {
+        Elements trs = table.getElementsByTag("tr");
+        // XWPFTableRow 第0行特殊处理
+        int rownum = 0;
+        for (Element tr : trs) {
+            addTableTr(xwpfTable, tr, rownum);
+            rownum++;
+        }
+    }
+
+    /**
+     * 将元素里面的tr 提取到 xwpfTabel
+     */
+    private static void addTableTr(XWPFTable xwpfTable, Element tr, int rownum) {
+        Elements tds = tr.getElementsByTag("th").isEmpty() ? tr.getElementsByTag("td") : tr.getElementsByTag("th");
+        XWPFTableRow row_1 = null;
+        for (int i = 0, j = tds.size(); i < j; i++) {
+            if (0 == rownum) {
+                // XWPFTableRow 第0行特殊处理,
+                XWPFTableRow row_0 = xwpfTable.getRow(0);
+                if (i == 0) {
+                    row_0.getCell(0).setText(tds.get(i).text());
+                } else {
+                    row_0.addNewTableCell().setText(tds.get(i).text());
+                }
+            } else {
+                if (i == 0) {
+                    // 换行需要创建一个新行
+                    row_1 = xwpfTable.createRow();
+                    row_1.getCell(i).setText(tds.get(i).text());
+                } else {
+                    row_1.getCell(i).setText(tds.get(i).text());
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 关闭输入流
+     *
+     * @param closeables
+     */
+    public static void closeStream(Closeable... closeables) {
+        for (Closeable c : closeables) {
+            if (c != null) {
+                try {
+                    c.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
 }

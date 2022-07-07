@@ -28,6 +28,6 @@ public class VersionUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(upgradeVersion("99999"));
+        System.out.println(upgradeVersion("0009"));
     }
 }
