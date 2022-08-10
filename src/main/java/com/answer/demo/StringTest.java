@@ -1,5 +1,7 @@
 package com.answer.demo;
 
+import cn.hutool.core.util.ObjectUtil;
+
 /**
  * @author liufeng
  * @version: V1.0
@@ -25,6 +27,15 @@ public class StringTest {
             System.out.println("图片右边的文本：" + rightText);
         }
 
+        String s = "222${pro}${xxx}555${eeee}5555";
+        String[] sarr = s.split("\\$");
+        for (int i = 0; i < sarr.length; i++) {
+            if (ObjectUtil.isNotEmpty(sarr[i]) && sarr[i].contains("{")) {
+                System.out.println("$" + sarr[i]);
+            } else {
+                System.out.println(sarr[i]);
+            }
+        }
 
     }
 }

@@ -17,7 +17,7 @@ public enum ElementEnum {
     I("i", "", "斜体"),
     LI("li", "paragraph", "序列"),
     U("u", "", "字体下划线"),
-    // IMG("img", "imgbase64", "base64图片"),
+    BASE64IMG("base64", "imgbase64", "base64图片"),
     IMG_URL("img", "imgurl", "图片url"),
     TABLE("table", "table", "表格");
 

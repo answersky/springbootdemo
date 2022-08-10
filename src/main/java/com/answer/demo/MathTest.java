@@ -1,12 +1,6 @@
 package com.answer.demo;
 
-import org.assertj.core.util.Lists;
-
-import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * created by liufeng
@@ -27,5 +21,25 @@ public class MathTest {
         formatter.setGroupingUsed(false);
         String result = formatter.format(10);
         System.out.println(result);
+
+
+        System.out.println(calculate(6));
+
+    }
+
+    private static Integer calculate(Integer num) {
+        if (num <= 3) {
+            return num;
+        }
+        if (num > 3 && num <= 300) {
+            double n = Math.sqrt(num);
+            double total = n + 1;
+            double result = Math.ceil(total);
+            return (int) result;
+        }
+        double n = Math.sqrt(num);
+        double total = n / 2 + 1;
+        double result = Math.ceil(total);
+        return (int) result;
     }
 }
