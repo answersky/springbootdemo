@@ -11,7 +11,7 @@ package com.answer.scheduleTask;
 public class TaskA implements TaskService {
 
     @Override
-    @Timecorn(time = 2000)
+//    @Timecorn(time = 2000)
     public void doTask() {
         System.out.println("taskA 任务执行");
     }

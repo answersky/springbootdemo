@@ -36,6 +36,9 @@ public class ScheduleTaskMain {
                 int time = 1000;
                 if (ObjectUtil.isNotEmpty(timecorn)) {
                     time = timecorn.time();
+                } else {
+                    //没有设置定时时间则不自动执行任务
+                    continue;
                 }
 
                 //定时周期执行
