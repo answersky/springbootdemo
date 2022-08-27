@@ -373,13 +373,19 @@ public class DocUtil {
         int row = tableDatas.size();
         int cell = tableDatas.get(0).size();
         XWPFTable xwpfTable = docx.createTable(row, cell);
-
+        xwpfTable.setWidth("100%");
+        //设置固定列宽
+        CTTblPr tblPr = xwpfTable.getCTTbl().getTblPr();
+        CTTblLayoutType t = tblPr.isSetTblLayout() ? tblPr.getTblLayout() : tblPr.addNewTblLayout();
+        t.setType(STTblLayoutType.FIXED);
         for (int index = 0; index < tableDatas.size(); index++) {
             //设置表格数据
             XWPFTableRow tableRow = xwpfTable.getRow(index);
             List<String> datas = tableDatas.get(index);
             for (int k = 0; k < cell; k++) {
-                tableRow.getCell(k).setText(datas.get(k));
+                XWPFTableCell tableCell = tableRow.getCell(k);
+//                tableCell.setWidth("500");
+                tableCell.setText(datas.get(k));
             }
         }
 
