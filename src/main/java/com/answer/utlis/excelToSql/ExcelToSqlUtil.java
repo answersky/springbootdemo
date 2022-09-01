@@ -1,11 +1,16 @@
 package com.answer.utlis.excelToSql;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.answer.utlis.ExcelUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Lists;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,16 +25,37 @@ public class ExcelToSqlUtil {
 
     public static void main(String[] args) throws Exception {
         //读取excel
-        String filePath = "D:\\app\\temp.xlsx";
-        String fileName = "temp.xlsx";
-        List<String> titles = Lists.newArrayList("name", "chineseName", "englishName", "uniqueKey", "menu", "pageModule", "pageCode");
+//        String filePath = "D:\\app\\temp.xlsx";
+//        String fileName = "temp.xlsx";
+//        List<String> titles = Lists.newArrayList("name", "chineseName", "englishName", "uniqueKey", "menu", "pageModule", "pageCode");
+//
+//        List<ExcelTempModel> dataList = readExcel(filePath, titles, fileName);
 
-        List<ExcelTempModel> dataList = readExcel(filePath, titles, fileName);
+        //读取json文本
+        String jsonFile = "D:\\app\\lims2.json";
+        List<ExcelTempModel> jsonDatas = readJsonText(jsonFile);
 
         //生成sql
         String tableName = "lims_internationalization_config";
         List<String> columns = Lists.newArrayList("name", "chinese_name", "english_name", "unique_key", "menu", "page_code", "page_module", "create_time", "tenant_id", "module_code");
-        generateSql(dataList, tableName, columns);
+        generateSql(jsonDatas, tableName, columns);
+    }
+
+    private static List<ExcelTempModel> readJsonText(String filePath) throws IOException {
+        List<ExcelTempModel> list = new ArrayList<>();
+        File file = new File(filePath);
+        String content = FileUtils.readFileToString(file, "UTF-8");
+        JSONArray arr = JSON.parseArray(content);
+        for (int i = 0; i < arr.size(); i++) {
+            JSONObject jsonObject = arr.getJSONObject(i);
+            ExcelTempModel excelTempModel = new ExcelTempModel();
+            excelTempModel.setName(jsonObject.getString("name"));
+            excelTempModel.setUniqueKey(jsonObject.getString("uniqueKey"));
+            excelTempModel.setEnglishName(jsonObject.getString("englishName"));
+            System.out.println(excelTempModel);
+            list.add(excelTempModel);
+        }
+        return list;
     }
 
     private static void generateSql(List<ExcelTempModel> dataList, String tableName, List<String> columns) {
@@ -45,7 +71,7 @@ public class ExcelToSqlUtil {
     }
 
     private static void writeToText(String sql) {
-        File file = new File("D:\\app\\sql.txt");
+        File file = new File("D:\\app\\sql2.txt");
         FileWriter writer = null;
         try {
             //覆盖写入 是否追加 true
