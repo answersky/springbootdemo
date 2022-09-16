@@ -10,11 +10,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openxmlformats.schemas.officeDocument.x2006.math.CTOMath;
+import org.openxmlformats.schemas.officeDocument.x2006.math.CTOMathPara;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import sun.misc.BASE64Decoder;
+import uk.ac.ed.ph.snuggletex.SnuggleEngine;
+import uk.ac.ed.ph.snuggletex.SnuggleInput;
+import uk.ac.ed.ph.snuggletex.SnuggleSession;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -238,11 +247,93 @@ public class DocUtil {
         infos.add(info);
         createTableNoTitle(docx, infos);
 
+
+        //添加计算公式
+//        com.spire.doc.Document document=new com.spire.doc.Document();
+//        Section section = document.addSection();
+//
+//        //添加段落1和段落2,添加Latex数学公式
+//        com.spire.doc.documents.Paragraph paragraph1 = section.addParagraph();
+//        OfficeMath officeMath1 = new OfficeMath(document);
+//        paragraph1.getItems().add(officeMath1);
+//        officeMath1.fromLatexMathCode("$f(x, y) = 100 * \\lbrace[(x + y) * 3] - 5\\rbrace$");
+
+
+        List<String> latexList = Lists.newArrayList("$f(x, y) = 100 * \\lbrace[(x + y) * 3] - 5\\rbrace$", "$\\cfrac{1}{a + \\cfrac{7}{b + \\cfrac{2}{9}}}\\times \\frac{\\partial^2}{\\partial x_1\\partial x_2}y$", "${_1^2}{_3^4}X_a^b$", "$\\frac{\\bigtriangleup y}{\\bigtriangleup x}$", "$_{a}^{b} x\\times c$", "$_{a}^{b} x\\frac{\\partial^2}{\\partial x_1\\partial x_2}y$", "$\\begin{equation}x = a_0 + \\frac{1}{a_1 + \\frac{1}{a_2 + \\frac{1}{a_3 + \\frac{1}{a_4} } } }\\end{equation}$", "$sdfdsaaf$", "$\\frac{x}{y} x\\frac{a}{b} x = a_0 + \\frac{1}{a_1 + \\frac{1}{a_2 + \\frac{1}{a_3 + \\frac{1}{a_4} } } }&", "$\\left | \\psi  \\right \\rangle \\frac{x}{y} x\\frac{a}{b} x = a_0 + \\frac{1}{a_1 + \\frac{1}{a_2 + \\frac{1}{a_3 + \\frac{1}{a_4} } } }\\Theta \\Phi \\delta$", "$\\sum_{i=1}^{n}{\\frac{1}{i^2} }$", "$\\frac {-b\\pm\\sqrt {b^2-4 \\times a \\times c}}{2 \\times a}$");
+        latexList.forEach(latex -> {
+            try {
+                XWPFParagraph calucateParagraph = docx.createParagraph();
+                calucateParagraph.setAlignment(ParagraphAlignment.LEFT);
+                addLatex(latexFilter(latex), calucateParagraph);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         //输出到write.docx
         OutputStream os = new FileOutputStream("D:\\app\\write.docx");
         docx.write(os);
         inputStream.close();
         os.close();
+    }
+
+    public static void addLatex(String latex, XWPFParagraph paragraph) throws Exception {
+        paragraph.setAlignment(ParagraphAlignment.LEFT);
+        paragraph.setFontAlignment(ParagraphAlignment.LEFT.getValue());
+        SnuggleEngine engine = new uk.ac.ed.ph.snuggletex.SnuggleEngine();
+        SnuggleSession session = engine.createSession();
+        SnuggleInput input = new uk.ac.ed.ph.snuggletex.SnuggleInput(latex);
+        session.parseInput(input);
+        String mathML = session.buildXMLString();
+        CTOMath ctOMath = getOMML(mathML);
+        CTP ctp = paragraph.getCTP();
+        CTOMath ctoMath = ctp.addNewOMath();
+        ctoMath.set(ctOMath);
+    }
+
+    private static File stylesheet = new File(DocUtil.class.getClass().getResource("/").getPath() + "docFile/MML2OMML.XSL");
+    private static TransformerFactory tFactory = TransformerFactory.newInstance();
+    private static StreamSource stylesource = new StreamSource(stylesheet);
+
+    private static CTOMath getOMML(String mathML) throws Exception {
+        Transformer transformer = tFactory.newTransformer(stylesource);
+
+        StringReader stringreader = new StringReader(mathML);
+        StreamSource source = new StreamSource(stringreader);
+
+        StringWriter stringwriter = new StringWriter();
+        StreamResult result = new StreamResult(stringwriter);
+        transformer.transform(source, result);
+
+        String ooML = stringwriter.toString();
+        stringwriter.close();
+
+        CTOMathPara ctOMathPara = CTOMathPara.Factory.parse(ooML);
+        CTOMath ctOMath = ctOMathPara.getOMathArray(0);
+
+        //for making this to work with Office 2007 Word also, special font settings are necessary
+        XmlCursor xmlcursor = ctOMath.newCursor();
+        while (xmlcursor.hasNextToken()) {
+            XmlCursor.TokenType tokentype = xmlcursor.toNextToken();
+            if (tokentype.isStart()) {
+                if (xmlcursor.getObject() instanceof CTR) {
+                    CTR cTR = (CTR) xmlcursor.getObject();
+//                    cTR.addNewRPr2().addNewRFonts().setAscii("Cambria Math");
+//                    cTR.getRPr2().getRFonts().setHAnsi("Cambria Math"); // up to apache poi 4.1.2
+                    //cTR.getRPr2().getRFontsArray(0).setHAnsi("Cambria Math"); // since apache poi 5.0.0
+                }
+            }
+        }
+
+        return ctOMath;
+    }
+
+
+    private static String latexFilter(String latex) {
+        if (!latex.contains("textcircled")) {
+            return latex;
+        }
+        return TextCircledEnum.replaceTextCircled(latex);
     }
 
     public static void replaceText(XWPFParagraph para) {

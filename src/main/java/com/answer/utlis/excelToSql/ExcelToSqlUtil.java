@@ -25,15 +25,16 @@ public class ExcelToSqlUtil {
 
     public static void main(String[] args) throws Exception {
         //读取excel
-//        String filePath = "D:\\app\\temp.xlsx";
-//        String fileName = "temp.xlsx";
+        String filePath = "D:\\app\\国际化.xls";
+        String fileName = "国际化.xls";
 //        List<String> titles = Lists.newArrayList("name", "chineseName", "englishName", "uniqueKey", "menu", "pageModule", "pageCode");
-//
-//        List<ExcelTempModel> dataList = readExcel(filePath, titles, fileName);
+        List<String> titles = Lists.newArrayList("uniqueKey", "name", "chineseName", "englishName", "menu", "pageModule", "pageCode");
 
-        //读取json文本
-        String jsonFile = "D:\\app\\lims2.json";
-        List<ExcelTempModel> jsonDatas = readJsonText(jsonFile);
+        List<ExcelTempModel> jsonDatas = readExcel(filePath, titles, fileName);
+
+//        //读取json文本
+//        String jsonFile = "D:\\app\\lims3.json";
+//        List<ExcelTempModel> jsonDatas = readJsonText(jsonFile);
 
         //生成sql
         String tableName = "lims_internationalization_config";
@@ -71,7 +72,7 @@ public class ExcelToSqlUtil {
     }
 
     private static void writeToText(String sql) {
-        File file = new File("D:\\app\\sql2.txt");
+        File file = new File("D:\\app\\sql3.txt");
         FileWriter writer = null;
         try {
             //覆盖写入 是否追加 true
