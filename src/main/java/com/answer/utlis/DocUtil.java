@@ -1,15 +1,19 @@
 package com.answer.utlis;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.microsoft.schemas.vml.CTShape;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
 import org.assertj.core.util.Lists;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTGraphicalObject;
+import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
 import org.openxmlformats.schemas.officeDocument.x2006.math.CTOMath;
 import org.openxmlformats.schemas.officeDocument.x2006.math.CTOMathPara;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
@@ -39,7 +43,7 @@ public class DocUtil {
     }
 
     public static void writeWord() throws IOException {
-        String templatePath = "template/demo.docx";
+        String templatePath = "template/moban.docx";
         Resource resource = new ClassPathResource(templatePath);
         InputStream inputStream = resource.getInputStream();
         XWPFDocument docx = new XWPFDocument(inputStream);
@@ -336,7 +340,94 @@ public class DocUtil {
         return TextCircledEnum.replaceTextCircled(latex);
     }
 
+    public static void replaceTextHasFile(XWPFDocument docx, XWPFParagraph para) {
+        //判断是否报告附件
+        List<String> imageBundleList = readImageInParagraph(para);
+        if (ObjectUtil.isNotEmpty(imageBundleList)) {
+            for (String pictureId : imageBundleList) {
+                XWPFPictureData pictureData = docx.getPictureDataByID(pictureId);
+                String imageName = pictureData.getFileName();
+//                String lastParagraphText = paragraphList.get(i + 1).getParagraphText();
+            }
+        } else {
+            List<XWPFRun> runs = para.getRuns();
+            //合并 "产品规格：${"，"productSpecification"，"}"
+            String str = "";
+            for (int i = 0; i < runs.size(); i++) {
+                XWPFRun run = runs.get(i);
+                String runText = run.toString();
+                str = str + runText;
+            }
+            System.out.println("解析到word模板:" + str);
+            for (int i = runs.size() - 1; i >= 0; i--) {
+                para.removeRun(i);
+            }
+            para.insertNewRun(0).setText(str);
+        }
+
+
+    }
+
+    //获取某一个段落中的所有图片索引
+    public static List<String> readImageInParagraph(XWPFParagraph paragraph) {
+        //图片索引List
+        List<String> imageBundleList = new ArrayList<String>();
+
+        //段落中所有XWPFRun
+        List<XWPFRun> runList = paragraph.getRuns();
+        for (XWPFRun run : runList) {
+            //XWPFRun是POI对xml元素解析后生成的自己的属性，无法通过xml解析，需要先转化成CTR
+            CTR ctr = run.getCTR();
+
+            //对子元素进行遍历
+            XmlCursor c = ctr.newCursor();
+            //这个就是拿到所有的子元素：
+            c.selectPath("./*");
+            while (c.toNextSelection()) {
+                XmlObject o = c.getObject();
+                //如果子元素是<w:drawing>这样的形式，使用CTDrawing保存图片
+                if (o instanceof CTDrawing) {
+                    CTDrawing drawing = (CTDrawing) o;
+                    CTInline[] ctInlines = drawing.getInlineArray();
+                    for (CTInline ctInline : ctInlines) {
+                        CTGraphicalObject graphic = ctInline.getGraphic();
+                        //
+                        XmlCursor cursor = graphic.getGraphicData().newCursor();
+                        cursor.selectPath("./*");
+                        while (cursor.toNextSelection()) {
+                            XmlObject xmlObject = cursor.getObject();
+                            // 如果子元素是<pic:pic>这样的形式
+                            if (xmlObject instanceof CTPicture) {
+                                org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture picture = (org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture) xmlObject;
+                                //拿到元素的属性
+                                imageBundleList.add(picture.getBlipFill().getBlip().getEmbed());
+                            }
+                        }
+                    }
+                }
+                //使用CTObject保存图片
+                //<w:object>形式
+                if (o instanceof CTObject) {
+                    CTObject object = (CTObject) o;
+                    System.out.println(object);
+                    XmlCursor w = object.newCursor();
+                    w.selectPath("./*");
+                    while (w.toNextSelection()) {
+                        XmlObject xmlObject = w.getObject();
+                        if (xmlObject instanceof CTShape) {
+                            CTShape shape = (CTShape) xmlObject;
+                            imageBundleList.add(shape.getImagedataArray()[0].getId2());
+                        }
+                    }
+                }
+            }
+        }
+        return imageBundleList;
+    }
+
+
     public static void replaceText(XWPFParagraph para) {
+
         List<XWPFRun> runs = para.getRuns();
         //合并 "产品规格：${"，"productSpecification"，"}"
         String str = "";
