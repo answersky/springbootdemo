@@ -3,8 +3,10 @@ package com.answer.utlis;
 import cn.hutool.core.date.format.FastDateFormat;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author liufeng
@@ -18,14 +20,34 @@ public class DateTimeUtil {
     static FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) throws ParseException {
-        String sTime = "2018-09-01 18:00:00";
+        String sTime = "2022-10-01 18:00:00";
         Date startTime = format.parse(sTime);
-        Date nextTime = startTime;
-        do {
-            nextTime = getAfterYear(nextTime, 1);
-        } while (nextTime.getTime() < ((new Date()).getTime()));
+//        Date nextTime = startTime;
+//        do {
+//            nextTime = getAfterDay(nextTime, 9);
+//        } while (nextTime.getTime() < ((new Date()).getTime()));
+//
+//        System.out.println("下次开始时间:" + format.format(nextTime));
 
-        System.out.println("下次开始时间:" + format.format(nextTime));
+
+        //获取两个时间点中所有的时间节点
+        Date endTime = format.parse("2022-10-15 17:00:00");
+        Date nextTime = startTime;
+        List<Date> times = new ArrayList<>();
+        times.add(startTime);
+        do {
+            nextTime = getAfterDay(nextTime, 9);
+            if (nextTime.getTime() <= (endTime.getTime())) {
+                times.add(nextTime);
+            } else {
+                break;
+            }
+
+        } while (true);
+
+        times.forEach(date -> {
+            System.out.println("获取所有的时间节点:" + format.format(date));
+        });
     }
 
     /**
