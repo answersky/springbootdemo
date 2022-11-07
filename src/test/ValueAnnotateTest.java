@@ -18,7 +18,7 @@ public class ValueAnnotateTest {
     private ValueAnnotateService valueAnnotateService;
 
     @Test
-    public void testAnnotate(){
+    public void testAnnotate() throws Exception {
         valueAnnotateService.systemValue();
     }
 }

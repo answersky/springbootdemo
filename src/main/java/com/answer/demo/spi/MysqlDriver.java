@@ -3,7 +3,6 @@ package com.answer.demo.spi;
 import com.mysql.jdbc.NonRegisteringDriver;
 
 import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;

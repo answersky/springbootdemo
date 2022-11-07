@@ -15,20 +15,31 @@ public class IndexController {
     @Autowired
     private ValueAnnotateService valueAnnotateService;
 
+    @Autowired
+    private com.answer.demospringbootstarter.service.DemoService demoService;
+
     @RequestMapping("/index")
     @ResponseBody
-    public String index(){
+    public String index() throws Exception {
         valueAnnotateService.systemValue();
         return "2";
     }
 
     @RequestMapping("/")
-    public String indexPage(){
+    public String indexPage() {
         return "index";
     }
 
-    @RequestMapping("/indexDB")
-    public String indexDBPage(){
-        return "indexDB";
+    @RequestMapping("/springBootStater")
+    @ResponseBody
+    public String springstater() {
+        demoService.printProperties();
+        return "springstater test";
+    }
+
+
+    @RequestMapping("/testException")
+    public void testException() throws Exception {
+        throw new Exception("test exception");
     }
 }

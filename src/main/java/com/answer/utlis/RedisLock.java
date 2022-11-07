@@ -3,7 +3,6 @@ package com.answer.utlis;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.sf.json.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;

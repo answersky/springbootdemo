@@ -20,7 +20,11 @@ public class SpringListener implements ApplicationListener<SpringEvent> {
 
     @Override
     public void onApplicationEvent(SpringEvent springEvent) {
-        System.out.println("监听到消息："+springEvent.getMessage()+name);
-        valueAnnotateService.systemValue();
+        System.out.println("监听到消息：" + springEvent.getMessage() + name);
+        try {
+            valueAnnotateService.systemValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
