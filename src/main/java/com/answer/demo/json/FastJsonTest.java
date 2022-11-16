@@ -15,7 +15,8 @@ public class FastJsonTest {
 
     public static void main(String[] args) throws IOException {
         StringBuffer Buffer = new StringBuffer();
-        FastJsonTest.readToBuffer(Buffer,"D:\\myworkspace\\springbootdemo\\src\\main\\java\\com\\answer\\demo\\json\\demo");
+        //D:\workspace\springbootdemo\src\main\java\com\answer\demo\json\demo
+        FastJsonTest.readToBuffer(Buffer, "D:\\workspace\\springbootdemo\\src\\main\\java\\com\\answer\\demo\\json\\demo");
         ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
         Object obj = JSON.parseObject(Buffer.toString());
 //        Object obj = JSON.parse(Buffer.toString());

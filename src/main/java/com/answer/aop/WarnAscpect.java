@@ -46,10 +46,16 @@ public class WarnAscpect {
         logger.info("【注解：AfterThrowing】方法异常时执行.....");
     }
 
-   /* @Around("pointCut()")
+    @Around("pointCut()")
     public Object around(ProceedingJoinPoint pjp) {
         logger.info("【注解：Around . 环绕前】方法环绕start.....");
         try {
+            //获取方法名称
+            String methodName = pjp.getSignature().getName();
+
+            //获取类名称
+            String className = pjp.getTarget().getClass().getName();
+
             logger.info("【注解：Before】业务方法获得的参数=ARGS : " + Arrays.toString(pjp.getArgs()));
             //如果不执行这句，会不执行切面的Before方法及业务方法
             Object o =  pjp.proceed();
@@ -59,6 +65,6 @@ public class WarnAscpect {
             e.printStackTrace();
             return null;
         }
-    }*/
+    }
 
 }

@@ -11,7 +11,7 @@ public class MysqlCon {
         String sql="select * from user";
         String url="jdbc:mysql://localhost:3306/test";
         String username="root";
-        String password="123456";
+        String password = "123";
         doSql(sql,url,username,password);
     }
 
