@@ -33,7 +33,8 @@ public class ReentrantLockTest1 {
 
                     System.out.println("A");
                     stauts = 2;
-                    conditionB.signal();
+                    conditionB.signalAll();
+                    System.out.println("线程B唤醒");
                 }
 
             } catch (Exception e) {
@@ -46,14 +47,14 @@ public class ReentrantLockTest1 {
         new Thread(() -> {
             try {
                 System.out.println("B:"+Thread.currentThread().getName());
-                for (int i = 1; i <= 2; i++) {
+                for (int i = 1; i <= 3; i++) {
                     lock.lock();
                     if (stauts != 2) {
                         conditionB.await();
                     }
                     System.out.println("B");
                     stauts = 3;
-                    conditionC.signal();
+                    conditionC.signalAll();
                 }
 
 
@@ -66,14 +67,14 @@ public class ReentrantLockTest1 {
         new Thread(() -> {
             try {
                 System.out.println("C:"+Thread.currentThread().getName());
-                for (int i = 1; i <= 2; i++) {
+                for (int i = 1; i <= 3; i++) {
                     lock.lock();
                     if (stauts != 3) {
                         conditionC.await();
                     }
                     System.out.println("C");
                     stauts = 1;
-                    conditionA.signal();
+                    conditionA.signalAll();
                 }
 
             } catch (Exception e) {

@@ -15,8 +15,8 @@ public class IndexController {
     @Autowired
     private ValueAnnotateService valueAnnotateService;
 
-    @Autowired
-    private com.answer.demospringbootstarter.service.DemoService demoService;
+//    @Autowired
+//    private com.answer.demospringbootstarter.service.DemoService demoService;
 
     @RequestMapping("/index")
     @ResponseBody
@@ -33,7 +33,7 @@ public class IndexController {
     @RequestMapping("/springBootStater")
     @ResponseBody
     public String springstater() {
-        demoService.printProperties();
+//        demoService.printProperties();
         return "springstater test";
     }
 

@@ -187,11 +187,11 @@
         </dependency>
 
         <!--        自定义springboot starter-->
-        <dependency>
-            <groupId>com.answer</groupId>
-            <artifactId>demo-spring-boot-starter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.answer</groupId>-->
+        <!--            <artifactId>demo-spring-boot-starter</artifactId>-->
+        <!--            <version>0.0.1-SNAPSHOT</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
