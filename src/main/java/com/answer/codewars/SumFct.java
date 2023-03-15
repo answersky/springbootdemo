@@ -2,7 +2,7 @@ package com.answer.codewars;
 
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * created by liufeng

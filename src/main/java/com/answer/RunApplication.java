@@ -14,7 +14,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
@@ -23,7 +22,6 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TreeMap;
@@ -37,6 +35,7 @@ import java.util.TreeMap;
 @EnableScheduling
 //开启切面
 @EnableAspectJAutoProxy
+//@MapperScan("com.answer.mapper")
 @Import(MybatisBeanRegister.class)
 public class RunApplication implements ApplicationRunner {
     private static final Logger log=LoggerFactory.getLogger(RunApplication.class);

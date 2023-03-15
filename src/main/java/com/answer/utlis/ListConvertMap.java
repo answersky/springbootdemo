@@ -1,9 +1,8 @@
 package com.answer.utlis;
 
-import org.apache.ibatis.annotations.Param;
+import com.sun.istack.internal.NotNull;
 import org.springframework.util.CollectionUtils;
 
-import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,17 +17,17 @@ import java.util.Map;
  */
 public class ListConvertMap {
 
-    public static Map<String,List<Object>> listToMap(@NotNull List<?> list,@NotNull String fieldName) throws IllegalAccessException, NoSuchFieldException {
-        Map<String,List<Object>> result=new LinkedHashMap<>();
-        for(Object t:list){
-            Object fieldValue=null;
-            if(t instanceof Map){
-                fieldValue=((Map) t).get(fieldName);
-            }else {
-                Class clazz=t.getClass();
-                Field field=clazz.getDeclaredField(fieldName);
+    public static Map<String, List<Object>> listToMap(@NotNull List<?> list, @NotNull String fieldName) throws IllegalAccessException, NoSuchFieldException {
+        Map<String, List<Object>> result = new LinkedHashMap<>();
+        for (Object t : list) {
+            Object fieldValue = null;
+            if (t instanceof Map) {
+                fieldValue = ((Map) t).get(fieldName);
+            } else {
+                Class clazz = t.getClass();
+                Field field = clazz.getDeclaredField(fieldName);
                 field.setAccessible(true);
-                fieldValue=field.get(t);
+                fieldValue = field.get(t);
             }
 
             if(fieldValue!=null){

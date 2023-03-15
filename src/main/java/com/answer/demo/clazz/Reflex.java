@@ -11,7 +11,10 @@ import java.lang.reflect.Field;
  */
 public class Reflex {
     public static void main(String[] args) {
-        Student student = new Student(1, "232", 2);
+        Student student = new Student();
+        student.setId(1);
+        student.setName("232");
+        student.setAge(2);
         Field[] fields = student.getClass().getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             //有的字段是用private修饰的 将他设置为可读

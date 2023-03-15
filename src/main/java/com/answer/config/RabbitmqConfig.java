@@ -6,13 +6,12 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author liufeng
  * 2021/11/29 15:08
  */
-@Configuration
+//@Configuration
 public class RabbitmqConfig {
 
     @Bean(name="message")

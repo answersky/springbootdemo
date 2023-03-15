@@ -1,8 +1,5 @@
 package com.answer.utlis;
 
-import com.answer.model.Student;
-import org.assertj.core.util.Lists;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,20 +33,20 @@ public class UtilTest {
         System.out.println(result);
 
 
-        Student s1 = new Student(1, "dddd", 23);
-        Student s2 = new Student(2, "xxx", 23);
-        Student s3 = new Student(3, "dddddd", 23);
-        Student s4 = new Student(2, "xxx", 23);
-        Student s5 = new Student(3, "gggg", 23);
-        List<Student> students = Lists.newArrayList(s1, s2, s3, s4, s5);
-        Map<String, List<Object>> resultMap = ListConvertMap.listToMap(students, "id");
-        System.out.println(resultMap);
-        for(Map.Entry<String,List<Object>> entry:resultMap.entrySet()){
-            List<Object> list=entry.getValue();
-            for(Object object:list){
-                Student student= (Student) object;
-                System.out.println(student.getName());
-            }
-        }
+//        Student s1 = new Student(1, "dddd", 23);
+//        Student s2 = new Student(2, "xxx", 23);
+//        Student s3 = new Student(3, "dddddd", 23);
+//        Student s4 = new Student(2, "xxx", 23);
+//        Student s5 = new Student(3, "gggg", 23);
+//        List<Student> students = Lists.newArrayList(s1, s2, s3, s4, s5);
+//        Map<String, List<Object>> resultMap = ListConvertMap.listToMap(students, "id");
+//        System.out.println(resultMap);
+//        for(Map.Entry<String,List<Object>> entry:resultMap.entrySet()){
+//            List<Object> list=entry.getValue();
+//            for(Object object:list){
+//                Student student= (Student) object;
+//                System.out.println(student.getName());
+//            }
+//        }
     }
 }

@@ -13,7 +13,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.Map;
  */
 public class HttpClientUtils {
 
-    private static Logger logger = Logger.getLogger(HttpClientUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(HttpClientUtils.class);
 
     public static final String CHARSET = "UTF-8";
 

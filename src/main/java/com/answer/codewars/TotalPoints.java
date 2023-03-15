@@ -1,6 +1,7 @@
 package com.answer.codewars;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * created by liufeng
@@ -9,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 public class TotalPoints {
     public static void main(String[] args) {
         assertEquals(30, TotalPoints.points(new String[]
-                {"1:0","2:0","3:0","4:0","2:1","3:1","4:1","3:2","4:2","4:3"}));
+                {"1:0", "2:0", "3:0", "4:0", "2:1", "3:1", "4:1", "3:2", "4:2", "4:3"}));
 
         assertEquals(10, TotalPoints.points(new String[]
                 {"1:1","2:2","3:3","4:4","2:2","3:3","4:4","3:3","4:4","4:4"}));

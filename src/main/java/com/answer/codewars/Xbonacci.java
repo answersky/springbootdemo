@@ -52,7 +52,7 @@ public class Xbonacci {
             }
         }
 
-        List<Double> list=CollectionUtils.arrayToList(results);
+        List<Double> list = (List<Double>) CollectionUtils.arrayToList(results);
         System.out.println(list);
         return results;
     }

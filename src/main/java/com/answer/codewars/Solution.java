@@ -1,6 +1,6 @@
 package com.answer.codewars;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * created by liufeng

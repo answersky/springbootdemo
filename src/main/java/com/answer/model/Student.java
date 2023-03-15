@@ -1,56 +1,27 @@
 package com.answer.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 /**
  * created by liufeng
  * 2021/10/12
  */
-public class Student {
+@Data
+@TableName("student_info")
+public class Student extends Entity {
     private int id;
     @Api(name = "名称")
     @Compare(same = true)
+    @TableField("username")
     private String name;
     @Api(name = "年龄")
     private int age;
 
-    public Student(){
+    private String sex;
 
-    }
-    public Student(int id,String name,int age){
-        this.id=id;
-        this.name=name;
-        this.age=age;
-    }
+    private String address;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
-    }
+    private String phone;
 }

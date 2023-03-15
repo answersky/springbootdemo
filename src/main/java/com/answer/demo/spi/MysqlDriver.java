@@ -1,6 +1,6 @@
 package com.answer.demo.spi;
 
-import com.mysql.jdbc.NonRegisteringDriver;
+import com.mysql.cj.jdbc.NonRegisteringDriver;
 
 import java.sql.Driver;
 import java.sql.SQLException;

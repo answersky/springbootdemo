@@ -2,7 +2,6 @@ package com.answer.utlis;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.answer.model.Compare;
-import com.answer.model.Student;
 
 import java.lang.reflect.Field;
 
@@ -17,10 +16,10 @@ import java.lang.reflect.Field;
 public class CompareUtil {
 
     public static void main(String[] args) throws Exception {
-        Student s1 = new Student(1, "张三", 22);
-        Student s2 = new Student(1, "张三1", 23);
-        boolean flag = compareObject(s1, s2);
-        System.out.println("是否相同：" + flag);
+//        Student s1 = new Student(1, "张三", 22);
+//        Student s2 = new Student(1, "张三1", 23);
+//        boolean flag = compareObject(s1, s2);
+//        System.out.println("是否相同：" + flag);
     }
 
     private static boolean compareObject(Object originalObject, Object targetObject) throws Exception {
