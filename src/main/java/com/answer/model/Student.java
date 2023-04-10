@@ -1,6 +1,8 @@
 package com.answer.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -11,7 +13,8 @@ import lombok.Data;
 @Data
 @TableName("student_info")
 public class Student extends Entity {
-    private int id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
     @Api(name = "名称")
     @Compare(same = true)
     @TableField("username")

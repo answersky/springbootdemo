@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
 public class Reflex {
     public static void main(String[] args) {
         Student student = new Student();
-        student.setId(1);
+        student.setId("1");
         student.setName("232");
         student.setAge(2);
         Field[] fields = student.getClass().getDeclaredFields();

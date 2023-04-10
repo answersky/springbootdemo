@@ -1,10 +1,13 @@
 package com.answer.vue;
 
 import com.alibaba.fastjson.JSON;
+import com.answer.model.Student;
 import com.answer.model.VueInfo;
+import com.answer.service.mybatisplus.StudentService;
 import com.answer.vue.model.Account;
 import com.answer.vue.model.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ import java.util.UUID;
 @RequestMapping("/vue")
 @Slf4j
 public class VueController {
+    @Autowired
+    private StudentService studentService;
 
     @GetMapping(value = "/info")
     public List<VueInfo> getInfo() {
@@ -55,5 +60,35 @@ public class VueController {
         log.info("登陆的账号信息：" + JSON.toJSONString(account));
         String token = UUID.randomUUID() + String.valueOf(System.currentTimeMillis());
         return ResponseResult.success(token);
+    }
+
+    @RequestMapping(value = "/getAllStudents", method = RequestMethod.GET)
+    public ResponseResult getAllStudents(@RequestParam("keyword") String keyword, @RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize) {
+        List<Student> studentList = studentService.getAllStudents(keyword, page, pageSize);
+        return ResponseResult.success(studentList);
+    }
+
+    @RequestMapping(value = "/addStudent", method = RequestMethod.POST)
+    public ResponseResult addStudent(@RequestBody Student student) {
+        studentService.addStudent(student);
+        return ResponseResult.success();
+    }
+
+    @RequestMapping(value = "/updateStudent", method = RequestMethod.POST)
+    public ResponseResult updateStudent(@RequestBody Student student) {
+        studentService.updateStudent(student);
+        return ResponseResult.success();
+    }
+
+    @RequestMapping(value = "/delStudent", method = RequestMethod.GET)
+    public ResponseResult delStudent(@RequestParam("ids") List<String> ids) {
+        studentService.delStudent(ids);
+        return ResponseResult.success();
+    }
+
+    @RequestMapping(value = "/queryById", method = RequestMethod.GET)
+    public ResponseResult delStudent(@RequestParam("id") String id) {
+        Student student = studentService.queryById(id);
+        return ResponseResult.success(student);
     }
 }
